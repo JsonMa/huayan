@@ -11,7 +11,8 @@ module.exports = (app) => {
   app.get('/app/post', 'page.appPost');
 
   // auth
-  app.post(`${prefix}/auth/login`, 'auth.login'); // only available for dev
+  app.post(`${prefix}/auth/login`, 'auth.login');
+  app.post(`${prefix}/auth/logout`, 'auth.logout');
 
   // user
   app.get(`${prefix}/users/:_id/addresses`, 'user.addresses');

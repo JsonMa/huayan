@@ -114,6 +114,24 @@ module.exports = (app) => {
         token,
       };
     }
+    /**
+     * logout
+     *
+     * @memberof AuthController
+     * @returns {object} 返回登出结果
+     */
+    async logout() {
+      const {
+        ctx,
+      } = this;
+      const { token } = ctx.state.auth;
+
+      const ret = app.redis.del(`${app.config.auth.prefix}:${token}`);
+      ctx.error(ret !== 1, '退出登登录失败', 10999);
+      ctx.jsonBody({
+        msg: '成功退出登录',
+      });
+    }
   }
   return AuthController;
 };
