@@ -12,7 +12,7 @@ module.exports = (app) => {
 
   // auth
   app.post(`${prefix}/auth/login`, 'auth.login');
-  app.post(`${prefix}/auth/logout`, 'auth.logout');
+  app.get(`${prefix}/auth/logout`, 'auth.logout');
 
   // user
   app.get(`${prefix}/users/:_id/addresses`, 'user.addresses');
