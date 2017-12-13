@@ -77,7 +77,7 @@ module.exports = (app) => {
       const {
         ctx, mobileRule, pcRule,
       } = this;
-      const { role } = ctx.req.body;
+      const { role } = ctx.request.body;
       ctx.assert(role, 400); // 抛出参数错误
       let user = '';
       let password = '';
@@ -88,7 +88,7 @@ module.exports = (app) => {
           name: userName, password: userPassword,
         } = await ctx.validate(pcRule);
         password = userPassword;
-        [user] = await this.app.model.Admin.find({
+        user = await this.app.model.User.findOne({
           where: { name: userName },
         });
       } else {
@@ -97,7 +97,7 @@ module.exports = (app) => {
         } = await ctx.validate(mobileRule);
         password = userPassword;
 
-        [user] = await this.app.model.User.find({
+        user = await this.app.model.User.findOne({
           where: { phone: userPhone },
         });
       }
@@ -105,7 +105,7 @@ module.exports = (app) => {
       /* 数据库验证 */
       const md5 = crypto.createHash('md5');
       password = md5.update(password).digest('hex');
-      ctx.error(password === user.password, '用户名或密码错误');
+      ctx.error(user && password === user.password, '用户名或密码错误', 10002, 400);
       const token = uuid();
       app.redis.set(`${app.config.auth.prefix}:${token}`, JSON.stringify({ role, id: user.id }));
       ctx.cookies.set('access_token', token);

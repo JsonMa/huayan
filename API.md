@@ -99,6 +99,7 @@ info:
     | 404  | not found   | 接口不存在            |
     | 500  | error       | 服务器错误            |
     | 10001 | auth error          | Session已失效, 请重新登录      |
+    | 10002 | auth error          | 用户名或密码错误               |    
     | 13000 | commodity attr error| 商品属性不存在                 |
     | 13001 | commodity attr error| 商品属性已存在                 |
     | 14000 | commodity category error | 商品分类不存在            |
@@ -112,31 +113,6 @@ info:
     | 16000 | file error          | 文件丢失                      |
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
-    | 17000 | logistifc error     | 创建失败:订单不存在            |
-    | 17001 | logistifc error     | 订单状态有误，不能执行发货请求  |
-    | 18001 | order error         | 商品不存在                    |
-    | 18002 | order error         | 收货地址不存在                 |
-    | 18003 | order error         | 订单当前状态不能修改为已完成    |
-    | 18004 | order error         | 商品属性或商品属性值不存在      |
-    | 18004 | order error         | 商品属性或商品属性值不存在      |
-    | 18005 | order error         | 必须包含商品属性或商品属性值    |
-    | 18006 | order error         | 商品已下架                     |
-    | 18007 | order error         | 当前订单已发起支付，无法修改价格 |
-    | 19001 | post category error | 禁止删除已使用帖子分类         |
-    | 19002 | post category error | 禁止重复创建帖子分类           |
-    | 12000 | post comment error  | 禁止用户对帖子重复评论         |
-    | 22000 | post vote error     | 禁止用户对帖子重复点赞         |
-    | 23000 | post vote error     | 禁止访问含有敏感词帖子         |
-    | 24000 | sensitive word error| 禁止创建重复敏感词             |
-    | 24001 | sensitive word error| 请上传txt格式文件             |
-    | 24002 | sensitive word error| txt文件必须包含敏感词          |
-    | 24003 | sensitive word error| txt文件编码方式错误            |
-    | 24004 | sensitive word error| txt文件中存在敏感词超过最大长度 |
-    | 25001 | trade error         | 订单不存在                    |
-    | 25002 | trade error         | 订单状态有误，不能发起支付      |
-    | 25003 | trade error         | 微信订单创建失败               |
-    | 25004 | trade error         | 支付宝订单创建失败             |
-    | 25005 | trade error         | 订单地址不存在                 |
 
   title: "庶邦 API"
   termsOfService: "http://172.19.3.186:25001/"

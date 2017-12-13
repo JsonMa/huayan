@@ -46,7 +46,7 @@ module.exports = {
 
     this.type = 'json';
     const err = Object.assign(new VError({
-      name: 'SHUBANG_ERROR',
+      name: 'HUAYAN_ERROR',
       cause: originalError,
     }, message), {
       code,
