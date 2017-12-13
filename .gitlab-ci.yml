@@ -7,18 +7,9 @@ stages:
 variables:
   EGG_SERVER_ENV: ci 
   Host: localhost
-  POSTGRES_DB: shubang
+  POSTGRES_DB: huayan
   POSTGRES_USER: postgres 
   POSTGRES_PASSWORD: root 
-
-build:
-  stage: build
-  tags:
-    - shell
-  when: manual
-  script: 
-      - docker build -t harbor.ioteams.com/saas/shubangv2-base . 
-      - docker push harbor.ioteams.com/saas/shubangv2-base
 
 eslint:
   stage: lint 

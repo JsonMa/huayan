@@ -42,7 +42,7 @@ module.exports = (app) => {
     },
     address: {
       type: STRING(32),
-      allowNull: false,
+      allowNull: true,
     },
     phone: {
       type: STRING(32),
@@ -77,10 +77,10 @@ module.exports = (app) => {
     role: {
       type: ENUM,
       values: [
-        1,
-        2,
+        '1',
+        '2',
       ],
-      defaultValue: 2,
+      defaultValue: '2',
       allowNull: false,
     },
   });
