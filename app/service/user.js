@@ -17,7 +17,7 @@ class UserService extends Service {
    * @memberof UserService
    * @returns {[User]} 用户数组
    */
-  async findByIds(ids) {
+  findByIds(ids) {
     const { assert } = this.ctx.helper;
     assert(ids instanceof Array, 'ids需为数组');
 
@@ -93,14 +93,14 @@ class UserService extends Service {
   }
 
   /**
-     * 创建用户
-     *
-     * @param {string}  name          -用户名称
-     * @param {string}  phone         -用户手机
-     * @param {int}     password      -用户密码
-     * @memberof UserService
-     * @returns {promise|null} 返回创建的商品
-     */
+   * 创建用户
+   *
+   * @param {string}  name          -用户名称
+   * @param {string}  phone         -用户手机
+   * @param {int}     password      -用户密码
+   * @memberof UserService
+   * @returns {promise|null} 返回创建的用户
+   */
   create(name, phone, password) {
     const { assert } = this.ctx.helper;
 
@@ -121,6 +121,7 @@ class UserService extends Service {
     assert(false, '用户名或手机至少需要选择一项');
     return null;
   }
+
   /**
      *  验证用户是否存在
      *
@@ -138,6 +139,23 @@ class UserService extends Service {
       },
     }).then((user) => {
       this.ctx.error(!user, '用户已存在', 10003);
+    });
+  }
+
+  /**
+   * 获取用户详情
+   *
+   * @param {string} id -用户ID
+   * @memberof Commodity
+   * @returns {promise} 返回用户详情
+   */
+  getByIdOrThrow(id) {
+    const { assert, uuidValidate } = this.ctx.helper;
+    assert(uuidValidate(id), 'id需为uuid格式');
+
+    return this.app.model.User.findById(id).then((user) => {
+      this.ctx.error(user, '用户不存在', 10004);
+      return user;
     });
   }
 }

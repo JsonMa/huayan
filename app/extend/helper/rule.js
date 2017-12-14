@@ -32,7 +32,7 @@ module.exports = {
   },
   url: {
     type: 'string',
-    format: '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]',
+    pattern: '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]',
   },
   file: {
     type: 'object',

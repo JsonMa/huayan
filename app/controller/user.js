@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const crypto = require('crypto');
 
 module.exports = (app) => {
   /**
@@ -101,6 +102,7 @@ module.exports = (app) => {
             maxLength: 30,
             minLength: 1,
           },
+          contact: this.ctx.helper.rule.phone,
           phone: this.ctx.helper.rule.phone,
           password: {
             type: 'string',
@@ -174,6 +176,72 @@ module.exports = (app) => {
         phone,
         password,
       );
+
+      ctx.jsonBody = user;
+    }
+
+    /**
+     * 获取用户详情
+     *
+     * @memberof UserController
+     * @returns {object} 用户详情
+     */
+    async show() {
+      const { ctx, service, showRule } = this;
+      await ctx.validate(showRule);
+
+      const { id } = ctx.params;
+      const user = await service.user.getByIdOrThrow(id);
+      delete user.dataValues.password;
+
+      ctx.jsonBody = user;
+    }
+
+    /**
+     * 修改用户
+     *
+     * @memberof CommodityController
+     * @returns {object} 被修改商品
+     */
+    async update() {
+      const { ctx, service, updateRule } = this;
+      await ctx.validate(updateRule);
+
+      const {
+        phone,
+        password,
+        avatar_id: avatarId,
+        picture_ids: pictureIds,
+      } = ctx.request.body;
+
+      const user = await service.user.getByIdOrThrow(ctx.params.id);
+
+      // 验证图片是否存在
+      /* istanbul ignore else */
+      if (pictureIds) {
+        ctx.error(pictureIds.length <= 5 && pictureIds.length >= 1, '用户图片数量需在1~5张范围内', 15001);
+        const files = await service.file.count(pictureIds, 'image');
+        ctx.error(files.count === pictureIds.length, '商品图片重复/丢失或包含非图片类型文件', 15002);
+      }
+
+      // 验证头像是否存在
+      /* istanbul ignore else */
+      if (avatarId) await service.file.getByIdOrThrow(avatarId);
+
+      // 密码
+      /* istanbul ignore else */
+      if (password) {
+        const md5 = crypto.createHash('md5');
+        ctx.request.body.password = md5.update(password).digest('hex');
+      }
+
+      // 手机号
+      /* istanbul ignore else */
+      if (phone) await service.user.isExisted(phone);
+
+      // 修改用户
+      Object.assign(user, ctx.request.body);
+      await user.save();
 
       ctx.jsonBody = user;
     }
