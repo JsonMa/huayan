@@ -8,6 +8,12 @@ module.exports = (app) => {
   app.post(`${prefix}/auth/login`, 'auth.login');
   app.get(`${prefix}/auth/logout`, 'auth.logout');
 
+  // user
+  app.get(`${prefix}/users`, 'user.index');
+  // app.get(`${prefix}/users/:id`, 'user.show');
+  app.post(`${prefix}/users`, 'user.create');
+  // app.patch(`${prefix}/users/:id`, 'user.update');
+
   // commodity
   app.get(`${prefix}/commodities`, 'commodity.index');
   app.get(`${prefix}/commodities/:id`, 'commodity.show');

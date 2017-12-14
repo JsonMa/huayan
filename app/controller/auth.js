@@ -10,21 +10,14 @@ module.exports = (app) => {
    */
   class AuthController extends app.Controller {
     /**
-     * mobile login 的参数规则
+     * login 的参数规则
      *
      * @readonly
      * @memberof AuthController
      */
-    get mobileRule() {
+    get loginRule() {
       return {
         properties: {
-          role: {
-            type: 'string',
-            enum: [
-              'admin',
-              'user',
-            ],
-          },
           phone: {
             type: 'string',
           },
@@ -39,35 +32,6 @@ module.exports = (app) => {
     }
 
     /**
-     * pc login 的参数规则
-     *
-     * @readonly
-     * @memberof AuthController
-     */
-    get pcRule() {
-      return {
-        properties: {
-          role: {
-            type: 'string',
-            enum: [
-              'admin',
-              'user',
-            ],
-          },
-          name: {
-            type: 'string',
-          },
-          password: {
-            type: 'string',
-          },
-        },
-        required: ['name', 'password'],
-        $async: true,
-        additionalProperties: false,
-      };
-    }
-
-    /**
      * login
      *
      * @memberof AuthController
@@ -75,45 +39,30 @@ module.exports = (app) => {
      */
     async login() {
       const {
-        ctx, mobileRule, pcRule,
+        ctx, loginRule,
       } = this;
-      const { role } = ctx.request.body;
-      ctx.assert(role, 400); // 抛出参数错误
-      let user = '';
-      let password = '';
 
-      /* istanbul ignore next */
-      if (role === 'admin') {
-        const {
-          name: userName, password: userPassword,
-        } = await ctx.validate(pcRule);
-        password = userPassword;
-        user = await this.app.model.User.findOne({
-          where: { name: userName },
-        });
-      } else {
-        const {
-          phone: userPhone, password: userPassword,
-        } = await ctx.validate(mobileRule);
-        password = userPassword;
-
-        user = await this.app.model.User.findOne({
-          where: { phone: userPhone },
-        });
-      }
+      let ecptPassword = '';
+      const {
+        phone, password,
+      } = await ctx.validate(loginRule);
+      const user = await this.app.model.User.findOne({
+        where: { phone },
+      });
 
       /* 数据库验证 */
       const md5 = crypto.createHash('md5');
-      password = md5.update(password).digest('hex');
-      ctx.error(user && password === user.password, '用户名或密码错误', 10002, 400);
+      ecptPassword = md5.update(password).digest('hex');
+      ctx.error(user && ecptPassword === user.password, '账号或密码错误', 10002, 400);
       const token = uuid();
-      app.redis.set(`${app.config.auth.prefix}:${token}`, JSON.stringify({ role, id: user.id }));
+      app.redis.set(`${app.config.auth.prefix}:${token}`, JSON.stringify({ role: user.role, id: user.id }));
       ctx.cookies.set('access_token', token);
       ctx.jsonBody = {
         user,
         token,
       };
     }
+
     /**
      * logout
      *

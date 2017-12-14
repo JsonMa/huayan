@@ -30,6 +30,10 @@ module.exports = {
     type: 'string',
     format: 'date-time',
   },
+  url: {
+    type: 'string',
+    format: '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]',
+  },
   file: {
     type: 'object',
     properties: {

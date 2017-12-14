@@ -100,6 +100,7 @@ info:
     | 500  | error       | 服务器错误            |
     | 10001 | auth error          | Session已失效, 请重新登录      |
     | 10002 | auth error          | 用户名或密码错误               |    
+    | 10003 | user error          | 用户已存在                    |        
     | 13000 | commodity attr error| 商品属性不存在                 |
     | 13001 | commodity attr error| 商品属性已存在                 |
     | 14000 | commodity category error | 商品分类不存在            |
