@@ -49,10 +49,17 @@ module.exports = (app) => {
       return {
         properties: {
           cover_id: this.ctx.helper.rule.uuid,
-          video_id: this.ctx.helper.rule.uuid,          
+          video_id: this.ctx.helper.rule.uuid,
+          status: {
+            type: 'string',
+            enum: [
+              'ON',
+              'OFF',
+            ],
+          },
           id: this.ctx.helper.rule.uuid,
         },
-        required: ['cover_id', 'id', 'video_id'],
+        required: ['id'],
         $async: true,
         additionalProperties: false,
       };

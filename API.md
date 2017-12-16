@@ -78,7 +78,7 @@ info:
     - 14000 - 14999: Commodity category 相关错误
     - 15000 - 15999: Commodity 相关错误
     - 16000 - 16999: File 相关错误
-    - 18000 - 18999: Order 相关错误
+    - 17000 - 17999: Card 相关错误
     - 19000 - 19999: Post category 相关错误
     - 20000 - 20999: Post comment 相关错误
     - 21000 - 21999: Post hit 相关错误
@@ -117,6 +117,7 @@ info:
     | 16000 | file error          | 文件丢失                      |
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
+    | 17001 | card error          | 贺卡不存在                    |    
 
   title: "庶邦 API"
   termsOfService: "http://172.19.3.186:25001/"
