@@ -32,9 +32,10 @@ module.exports = (app) => {
     get createRule() {
       return {
         properties: {
-          picture_id: this.ctx.helper.rule.uuid,
+          cover_id: this.ctx.helper.rule.uuid,
+          video_id: this.ctx.helper.rule.uuid,
         },
-        required: ['picture_id'],
+        required: ['cover_id', 'video_id'],
         $async: true,
         additionalProperties: false,
       };
@@ -47,10 +48,11 @@ module.exports = (app) => {
     get updateRule() {
       return {
         properties: {
-          picture_id: this.ctx.helper.rule.uuid,
+          cover_id: this.ctx.helper.rule.uuid,
+          video_id: this.ctx.helper.rule.uuid,          
           id: this.ctx.helper.rule.uuid,
         },
-        required: ['picture_id', 'id'],
+        required: ['cover_id', 'id', 'video_id'],
         $async: true,
         additionalProperties: false,
       };
@@ -81,14 +83,18 @@ module.exports = (app) => {
       const { ctx, service, createRule } = this;
       ctx.adminPermission();
       await ctx.validate(createRule);
-      const { picture_id: pictureId } = ctx.request.body;
+      const { cover_id: coverId, video_id: videoId } = ctx.request.body;
 
       const total = await app.model.Banner.count();
       ctx.error(total <= 5, 'banner数量不能大于5', 26002, 400);
-      // 验证picture_id是否存在，且为图片类型;
-      const file = await service.file.getByIdOrThrow(pictureId);
-      ctx.error(!!~file.type.indexOf('image/'), 'banner非图片类型文件', 26001, 400); // eslint-disable-line
-      const createdBanner = await app.model.Banner.create({ picture_id: pictureId });
+
+      // 验证cover_id、video_id是否存在，且为图片类型;
+      const image = await service.file.getByIdOrThrow(coverId);
+      const video = await service.file.getByIdOrThrow(videoId);
+      ctx.error(!!~image.type.indexOf('image/'), '视频封面非图片类型文件', 11001, 400); // eslint-disable-line
+      ctx.error(!!~video.type.indexOf('video/'), '非视频类型文件', 11002, 400); // eslint-disable-line
+
+      const createdBanner = await app.model.Banner.create({ cover_id: coverId, video_id: videoId });
 
       ctx.jsonBody = createdBanner;
     }
@@ -121,14 +127,17 @@ module.exports = (app) => {
       const { ctx, service, updateRule } = this;
       ctx.adminPermission();
       await ctx.validate(updateRule);
-      const { picture_id: pictureId } = ctx.request.body;
+      const { cover_id: coverId, video_id: videoId } = ctx.request.body;
 
-      // 验证picture_id是否存在，且为图片类型;
-      const file = await service.file.getByIdOrThrow(pictureId);
-      ctx.error(!!~file.type.indexOf('image/'), 'banner非图片类型文件', 26001, 400); // eslint-disable-line
+      // 验证cover_id、video_id是否存在，且为图片类型;
+      const image = await service.file.getByIdOrThrow(coverId);
+      const video = await service.file.getByIdOrThrow(videoId);
+      ctx.error(!!~image.type.indexOf('image/'), '视频封面非图片类型文件', 11001, 400); // eslint-disable-line
+      ctx.error(!!~video.type.indexOf('video/'), '非视频类型文件', 11002, 400); // eslint-disable-line
+
       // 验证banner是否存在
       const banner = await app.model.Banner.findById(ctx.params.id);
-      ctx.error(banner, 'banner不存在', 26000);
+      ctx.error(banner, 'banner不存在', 11003);
       Object.assign(banner, ctx.request.body);
       await banner.save();
 
