@@ -2,7 +2,7 @@ module.exports = (app) => {
   const { formidable, compress } = app.middleware;
 
   /* istanbul ignore next */
-  const prefix = app.config.noPrefix ? '' : '/api/v2';
+  const prefix = app.config.noPrefix ? '' : '/api/v1';
 
   // auth
   app.post(`${prefix}/auth/login`, 'auth.login');
