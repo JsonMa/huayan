@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const assert = require('assert');
-const uuidv4 = require('uuid/v4');
 const crypto = require('crypto');
 const Promise = require('bluebird');
 

@@ -1,7 +1,6 @@
 const co = require('co');
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
-const uuid = require('uuid');
 
 const {
   UUID,
