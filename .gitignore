@@ -10,7 +10,7 @@ yarn.lock
 .travis.yml
 .vscode
 package-lock.json
-config/config.*.js
+config/config.local.js
 jsdoc
 .nyc_output
 files/

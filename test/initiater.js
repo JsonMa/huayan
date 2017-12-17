@@ -1,3 +1,4 @@
+// @ts-nocheck
 const _ = require('lodash');
 const assert = require('assert');
 const crypto = require('crypto');
@@ -110,7 +111,7 @@ module.exports = class Initiater {
    */
   _injectUser() {
     const md5 = crypto.createHash('md5');
-    const password = md5.update('123456').digest('hex');
+    const password = md5.update('123456', 'utf-8').digest('hex');
     return this.app.model.User.bulkCreate([{
       name: 'huayan-test-user',
       phone: '13896120331',
@@ -212,7 +213,7 @@ module.exports = class Initiater {
     {
       name: 'file2',
       path: 'file://mock-file2',
-      type: 'image/png',
+      type: 'video/mp4',
       size: 1024,
     },
     ]);
@@ -252,10 +253,12 @@ module.exports = class Initiater {
     return this._injectDependences(['file']).then(() =>
     // inject file ...
       this.app.model.Banner.bulkCreate([{
-        picture_id: this.values.file[0].id,
+        cover_id: this.values.file[0].id,
+        video_id: this.values.file[1].id,
       },
       {
-        picture_id: this.values.file[1].id,
+        cover_id: this.values.file[0].id,
+        video_id: this.values.file[1].id,
       },
       ]));
   }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = (app) => {
   /**
    * banner相关Controller
@@ -137,10 +138,14 @@ module.exports = (app) => {
       const { cover_id: coverId, video_id: videoId } = ctx.request.body;
 
       // 验证cover_id、video_id是否存在，且为图片类型;
-      const image = await service.file.getByIdOrThrow(coverId);
-      const video = await service.file.getByIdOrThrow(videoId);
-      ctx.error(!!~image.type.indexOf('image/'), '视频封面非图片类型文件', 11001, 400); // eslint-disable-line
-      ctx.error(!!~video.type.indexOf('video/'), '非视频类型文件', 11002, 400); // eslint-disable-line
+      if (coverId) {
+        const image = await service.file.getByIdOrThrow(coverId);
+        ctx.error(!!~image.type.indexOf('image/'), '视频封面非图片类型文件', 11001, 400); // eslint-disable-line      
+      }
+      if (videoId) {
+        const video = await service.file.getByIdOrThrow(videoId);
+        ctx.error(!!~video.type.indexOf('video/'), '非视频类型文件', 11002, 400); // eslint-disable-line
+      }
 
       // 验证banner是否存在
       const banner = await app.model.Banner.findById(ctx.params.id);

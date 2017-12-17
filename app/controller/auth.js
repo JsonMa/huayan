@@ -1,3 +1,4 @@
+// @ts-nocheck
 const uuid = require('uuid/v4');
 const crypto = require('crypto');
 
@@ -73,9 +74,9 @@ module.exports = (app) => {
       const {
         ctx,
       } = this;
-      const { token } = ctx.state.auth;
+      const { access_token: token } = ctx.header;
 
-      const ret = app.redis.del(`${app.config.auth.prefix}:${token}`);
+      const ret = await app.redis.del(`${app.config.auth.prefix}:${token}`);
       ctx.error(ret !== 1, '退出登登录失败', 10999);
       ctx.jsonBody({
         msg: '成功退出登录',

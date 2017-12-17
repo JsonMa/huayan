@@ -1,3 +1,4 @@
+// @ts-nocheck
 const Initiater = require('../../initiater');
 const uuidv4 = require('uuid/v4');
 
@@ -16,7 +17,7 @@ describe('test/app/controller/commodity_category.test.js', () => {
       state: {
         auth: {
           token: uuidv4(),
-          role: 'admin',
+          role: '1',
           user: {
             id: initiater.userId,
           },
@@ -45,13 +46,12 @@ describe('test/app/controller/commodity_category.test.js', () => {
 
   describe('test/app/controller/commodity.test.js', () => {
     it('should add commodity category successfully', async () => {
-      const file = initiater._getRandomItem('file');
 
       const resp = await app.httpRequest()
         .post('/commodity_categories')
         .send({
           name: 'CATEGORY',
-          cover_id: file.id,
+          cover_id: initiater.values.file[0].id,
         })
         .expect(200);
       assert(resp.body.data.name === 'CATEGORY');
@@ -66,7 +66,7 @@ describe('test/app/controller/commodity_category.test.js', () => {
     });
   });
 
-  it('should batch delete commodities successfully', async () => {
+  it('should batch delete commodity category successfully', async () => {
     const commodityCategory = initiater._getRandomItem('commodity_category');
 
     const resp = await app.httpRequest()
@@ -75,15 +75,14 @@ describe('test/app/controller/commodity_category.test.js', () => {
     assert(resp.body.data[0].id === commodityCategory.id);
   });
 
-  it('should update commodity successfully', async () => {
+  it('should update commodity category successfully', async () => {
     const commodityCategory = initiater._getRandomItem('commodity_category');
-    const file = initiater._getRandomItem('file');
 
     const resp = await app.httpRequest()
       .patch(`/commodity_categories/${commodityCategory.id}`)
       .send({
         name: 'CATEGORY',
-        cover_id: file.id,
+        cover_id: initiater.values.file[0].id,
       })
       .expect(200);
     assert(resp.body.data.name === 'CATEGORY');

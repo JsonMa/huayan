@@ -1,3 +1,4 @@
+// @ts-nocheck
 const Initiater = require('../../initiater');
 const uuidv4 = require('uuid/v4');
 
@@ -16,7 +17,7 @@ describe('test/app/controller/banner.test.js', () => {
       state: {
         auth: {
           token: uuidv4(),
-          role: 'admin',
+          role: '1',
           user: {
             id: initiater.userId,
           },
@@ -36,16 +37,16 @@ describe('test/app/controller/banner.test.js', () => {
     assert.equal(resp.body.data.count, 2);
   });
 
-  describe('add commodity', () => {
+  describe('add banner', () => {
     it('should add banner successfully', async () => {
-      const file = initiater._getRandomItem('file');
       const resp = await app.httpRequest()
         .post('/banners')
         .send({
-          picture_id: file.id,
+          cover_id: initiater.values.file[0].id,
+          video_id: initiater.values.file[1].id,
         })
         .expect(200);
-      assert.equal(resp.body.data.picture_id, file.id);
+      assert.equal(resp.body.data.cover_id, initiater.values.file[0].id);
       this.mockBanner = resp.body.data;
     });
 
@@ -61,10 +62,10 @@ describe('test/app/controller/banner.test.js', () => {
     const resp = await app.httpRequest()
       .patch(`/banners/${initiater.values.banner[0].id}`)
       .send({
-        picture_id: initiater.values.file[1].id,
+        cover_id: initiater.values.file[0].id,
       })
       .expect(200);
-    assert.equal(resp.body.data.picture_id, initiater.values.file[1].id);
+    assert.equal(resp.body.data.cover_id, initiater.values.file[0].id);
   });
 
   it('should delete banner successfully', async () => {
