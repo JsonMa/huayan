@@ -46,7 +46,6 @@ describe('test/app/controller/commodity_category.test.js', () => {
 
   describe('test/app/controller/commodity.test.js', () => {
     it('should add commodity category successfully', async () => {
-
       const resp = await app.httpRequest()
         .post('/commodity_categories')
         .send({
