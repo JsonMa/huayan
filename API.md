@@ -72,14 +72,13 @@ info:
     - 200-500: http错误
     - 1000  - 9999 : 系统内部操作错误, 如DB, REDIS
     - 10000 - 10999: Auth 相关错误
-    - 11000 - 11999: Address 相关错误
+    - 11000 - 11999: Banner 相关错误    
     - 12000 - 12999: Commodity attribute value 相关错误
     - 13000 - 13999: Commodity attribute 相关错误
     - 14000 - 14999: Commodity category 相关错误
     - 15000 - 15999: Commodity 相关错误
     - 16000 - 16999: File 相关错误
-    - 17000 - 17999: Logistic 相关错误
-    - 18000 - 18999: Order 相关错误
+    - 17000 - 17999: Card 相关错误
     - 19000 - 19999: Post category 相关错误
     - 20000 - 20999: Post comment 相关错误
     - 21000 - 21999: Post hit 相关错误
@@ -102,6 +101,9 @@ info:
     | 10002 | auth error          | 用户名或密码错误               |    
     | 10003 | user error          | 用户已存在                    |    
     | 10004 | user error          | 用户不存在                    |
+    | 11001 | banner error          | 视频封面非图片类型文件        |
+    | 11002 | banner error          | 非视频类型文件               |
+    | 11003 | banner error          | banner不存在                |    
     | 13000 | commodity attr error| 商品属性不存在                 |
     | 13001 | commodity attr error| 商品属性已存在                 |
     | 14000 | commodity category error | 商品分类不存在            |
@@ -115,6 +117,7 @@ info:
     | 16000 | file error          | 文件丢失                      |
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
+    | 17001 | card error          | 贺卡不存在                    |    
 
   title: "庶邦 API"
   termsOfService: "http://172.19.3.186:25001/"

@@ -1,11 +1,13 @@
 const TOKEN = 'access_token';
-const ADMIN = 'admin';
 const SESSION_RULE = {
   properties: {
     role: {
-      enum: ['admin', 'user'],
+      enum: ['1', '2'],
     },
-    id: { type: 'integer' },
+    id: {
+      type: 'string',
+      pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    },
   },
   required: ['role', 'id'],
   additionalProperties: false,
@@ -32,8 +34,7 @@ module.exports = option => function* (next) {
     this.error('Session已失效, 请重新登录', 10001);
   }
 
-  const model = session.role === ADMIN ? this.app.model.Admin : this.app.model.User;
-  const user = yield model.findById(session.id);
+  const user = yield this.app.model.User.findById(session.id);
 
   this.assert(user, 401, 'Session已失效，请重新登录');
   this.state.auth = Object.assign({}, this.state.auth, {
