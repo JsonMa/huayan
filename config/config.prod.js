@@ -20,7 +20,7 @@ exports.redis = {
   },
 };
 
-exports.noPrefix = true;
+exports.noPrefix = false;
 
 exports.auth = {
   prefix: 'huayan',
