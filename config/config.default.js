@@ -30,8 +30,8 @@ module.exports = () => {
     dialect: 'postgres',
     host: 'localhost',
     port: 5432,
-    username: 'postgres',
-    password: 'root',
+    username: 'dbuser',
+    password: 'root123456',
     database: 'huayan',
     benchmark: true,
     define: {
