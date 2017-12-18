@@ -54,8 +54,8 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start",
-    "stop": "egg-scripts stop",
+    "start": "egg-scripts start --daemon --title=egg-server-huayan",
+    "stop": "egg-scripts stop --title=egg-server-huayan",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "report": "egg-bin cov",

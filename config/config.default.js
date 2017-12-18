@@ -2,7 +2,7 @@
 module.exports = () => {
   const exports = {};
 
-  exports.keys = 'saas-shubang-server';
+  exports.keys = 'huayan-server';
 
   exports.middleware = [
     'error',
@@ -32,7 +32,7 @@ module.exports = () => {
     port: 5432,
     username: 'postgres',
     password: 'root',
-    database: 'shubang',
+    database: 'huayan',
     benchmark: true,
     define: {
       freezeTableName: true,

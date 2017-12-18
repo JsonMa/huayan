@@ -35,24 +35,24 @@ branch_name:
   script:
     - node -e "assert(process.env.CI_BUILD_REF_NAME.match('(feature|bug|hotfix|dev)[a-zA-Z_]+'))"
 
-test: 
-  image: harbor.ioteams.com/saas/shubangv2-base
-  stage: test
-  only:
-    - branches
-  except:
-    - develop
-    - master 
-  tags:
-    - docker registry
-  before_script:
-    - mkdir -p files
-    - ln -s /app/node_modules node_modules
-  script: 
-    - npm test
-  services: 
-    - redis:3.2
-    - postgres:9.6.5
+# test: 
+#   image: harbor.ioteams.com/saas/shubangv2-base
+#   stage: test
+#   only:
+#     - branches
+#   except:
+#     - develop
+#     - master 
+#   tags:
+#     - docker registry
+#   before_script:
+#     - mkdir -p files
+#     - ln -s /app/node_modules node_modules
+#   script: 
+#     - npm test
+#   services: 
+#     - redis:3.2
+#     - postgres:9.6.5
 
 # coverage: 
 #   image: harbor.ioteams.com/saas/shubangv2-base
