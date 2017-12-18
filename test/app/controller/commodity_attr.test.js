@@ -16,7 +16,7 @@ describe('test/app/controller/commodity_attribute.test.js', () => {
       state: {
         auth: {
           token: uuidv4(),
-          role: 'admin',
+          role: '1',
           user: {
             id: initiater.userId,
           },

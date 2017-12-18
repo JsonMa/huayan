@@ -15,7 +15,7 @@ describe('test/app/controller/file.test.js', () => {
       state: {
         auth: {
           token: uuidv4(),
-          role: 'admin',
+          role: '1',
           user: {
             id: initiater.userId,
           },

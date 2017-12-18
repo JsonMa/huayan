@@ -1,3 +1,4 @@
+// @ts-nocheck
 const Initiater = require('../../initiater');
 const uuidv4 = require('uuid/v4');
 
@@ -16,7 +17,7 @@ describe('test/app/controller/commodity.test.js', () => {
       state: {
         auth: {
           token: uuidv4(),
-          role: 'admin',
+          role: '1',
           user: {
             id: initiater.userId,
           },
@@ -62,7 +63,6 @@ describe('test/app/controller/commodity.test.js', () => {
   describe('add commodity', () => {
     it('should add commodity successfully', async () => {
       const commodityCategory = initiater._getRandomItem('commodity_category');
-      const file = initiater._getRandomItem('file');
 
       const resp = await app.httpRequest()
         .post('/commodities')
@@ -92,7 +92,7 @@ describe('test/app/controller/commodity.test.js', () => {
             },
           ],
           picture_ids: [
-            file.id,
+            initiater.values.file[0].id,
           ],
         })
         .expect(200);
@@ -117,8 +117,6 @@ describe('test/app/controller/commodity.test.js', () => {
   it('should update commodity successfully', async () => {
     const commodity = initiater._getRandomItem('commodity');
     const commodityCategory = initiater._getRandomItem('commodity_category');
-    const file = initiater._getRandomItem('file');
-
     const resp = await app.httpRequest()
       .patch(`/commodities/${commodity.id}`)
       .send({
@@ -129,7 +127,7 @@ describe('test/app/controller/commodity.test.js', () => {
         act_price: null,
         recommended: false,
         picture_ids: [
-          file.id,
+          initiater.values.file[0].id,
         ],
       })
       .expect(200);

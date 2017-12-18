@@ -25,6 +25,8 @@ module.exports = (app) => {
      * @property {enum}    status         - 商家状态['ON', 'OFF']
      * @property {enum}    role           - 用户角色[1,2]分别代表系统管理员、商家
      * @property {string}  password       - 密码,md5加密后的值
+     * @property {number}  card_num       - 贺卡剩余数量
+     * @property {number}  card_total     - 贺卡总数
      */
   const User = app.model.define('user', {
     id: {
@@ -38,11 +40,15 @@ module.exports = (app) => {
     },
     name: {
       type: STRING(20),
-      allowNull: false,
+      allowNull: true,
+    },
+    contact: {
+      type: STRING(20),
+      allowNull: true,
     },
     address: {
       type: STRING(32),
-      allowNull: false,
+      allowNull: true,
     },
     phone: {
       type: STRING(32),
@@ -55,6 +61,16 @@ module.exports = (app) => {
     avatar_id: {
       type: UUID,
       allowNull: true,
+    },
+    card_num: {
+      type: INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    card_total: {
+      type: INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
     picture_ids: {
       type: ARRAY(UUID),
@@ -77,10 +93,10 @@ module.exports = (app) => {
     role: {
       type: ENUM,
       values: [
-        1,
-        2,
+        '1',
+        '2',
       ],
-      defaultValue: 2,
+      defaultValue: '2',
       allowNull: false,
     },
   });

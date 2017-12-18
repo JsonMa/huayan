@@ -53,6 +53,7 @@ module.exports = (app) => {
     async upload() {
       const { ctx, uploadRule } = this;
       const { files } = ctx.request;
+      ctx.authPermission();
       await ctx.validate(uploadRule);
 
       const reqFiles = files.map(file => ({

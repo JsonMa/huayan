@@ -46,7 +46,7 @@ module.exports = {
 
     this.type = 'json';
     const err = Object.assign(new VError({
-      name: 'SHUBANG_ERROR',
+      name: 'HUAYAN_ERROR',
       cause: originalError,
     }, message), {
       code,
@@ -87,9 +87,10 @@ module.exports = {
    */
   checkPermission(userId) {
     assert(userId, 'userId is required');
+    this.assert(this.state.auth, '使用了用户认证，但未开启auth中间件', 500);
 
     /* istanbul ignore next */
-    if (this.state.auth.role === 'admin') {
+    if (this.state.auth.role === '1') {
       return;
     }
 
@@ -104,7 +105,9 @@ module.exports = {
    * @return {undefined}
    */
   userPermission(userId) {
-    this.assert.equal(this.state.auth.role, 'user', 403);
+    this.assert(this.state.auth, '使用了用户认证，但未开启auth中间件', 500);
+
+    this.assert.equal(this.state.auth.role, '2', 403);
     if (userId) {
       const { user } = this.state.auth;
       this.assert(user, 403);
@@ -119,7 +122,8 @@ module.exports = {
    * @return {undefined}
    */
   adminPermission(roleIds) {
-    this.assert.equal(this.state.auth.role, 'admin', 403);
+    this.assert(this.state.auth, '使用了用户认证，但未开启auth中间件', 500);
+    this.assert.equal(this.state.auth.role, '1', 403);
 
     /* istanbul ignore if */
     if (roleIds) {
@@ -134,6 +138,8 @@ module.exports = {
    * @return {undefined}
    */
   authPermission() {
+    this.assert(this.state.auth, '使用了用户认证，但未开启auth中间件', 500);
+
     const { user } = this.state.auth;
     this.assert(user, 403);
   },

@@ -3,7 +3,7 @@ const assert = require('assert');
 const { VError } = require('verror');
 
 module.exports = options => function* (next) {
-  this.authPermission();
+  // this.authPermission();
   const form = new formidable.IncomingForm();
   assert(typeof options === 'object', 'options需为对象');
 
@@ -21,7 +21,7 @@ module.exports = options => function* (next) {
     });
 
     form.on('fileBegin', (name, file) => {
-      const validate = /.(jpg|jpeg|png|xlsx|xls|txt|gif|bmp)$/i.test(file.name);
+      const validate = /.(jpg|jpeg|png|xlsx|xls|txt|gif|bmp|mp4|mp3|silk)$/i.test(file.name);
       /* istanbul ignore next */
       if (!validate) {
         // 停止接收文件并抛出错误
@@ -39,7 +39,7 @@ module.exports = options => function* (next) {
 
     form.on('progress', (bytesExpected) => {
       /* istanbul ignore next */
-      if (bytesExpected > 1 * 1024 * 1024) {
+      if (bytesExpected > 10 * 1024 * 1024) {
         // 停止接收文件并抛出错误
         this.set('Connection', 'close');
         const err = Object.assign(new VError({
