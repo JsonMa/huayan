@@ -14,6 +14,13 @@ module.exports = (app) => {
   app.post(`${prefix}/users`, 'user.create');
   app.patch(`${prefix}/users/:id`, 'user.update');
 
+  // card
+  app.get(`${prefix}/cards`, 'card.index');
+  app.get(`${prefix}/cards/:id`, 'card.show');
+  app.post(`${prefix}/cards`, 'card.create');
+  app.patch(`${prefix}/cards/:id`, 'card.update');
+  app.delete(`${prefix}/cards/:id`, 'card.destroy');
+
   // commodity
   app.get(`${prefix}/commodities`, 'commodity.index');
   app.get(`${prefix}/commodities/:id`, 'commodity.show');

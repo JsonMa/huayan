@@ -2,12 +2,11 @@ const qs = require('querystring');
 const time = require('moment')().format('X');
 const uuid = require('uuid/v4');
 const crypto = require('crypto');
-
-const { config } = this.app;
+const { yLink } = require('../../../config/config.default')();
 
 module.exports = {
   singnature(timestamp) {
-    const sign = config.ak + timestamp + config.sk;
+    const sign = yLink.ak + timestamp + yLink.sk;
     return crypto.createHash('md5').digest(sign);
   },
 

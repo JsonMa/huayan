@@ -111,6 +111,14 @@ info:
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
     | 17001 | card error          | 贺卡不存在                    |    
+    | 17002 | card error          | 贺卡已经被编辑过，不能再次编辑   |
+    | 17003 | card error          | 录音文件非音频类型              |
+    | 17004 | card error          | 贺卡照片数量需在1~5张范围内       |
+    | 17005 | card error          | 贺卡照片重复/丢失或包含非图片类型文件  |
+    | 17006 | card error          | 录像文件非视频类型              |
+    | 17007 | card error          | 录像封面非图片类型              |
+    | 17008 | card error          | 贺卡背景非图片类型              |
+    | 17009 | card error          | 创建贺卡失败，剩余数量小于1      |    
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

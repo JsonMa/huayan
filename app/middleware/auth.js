@@ -15,7 +15,7 @@ const SESSION_RULE = {
 
 /* istanbul ignore next */
 module.exports = option => function* (next) {
-  if (!~this.path.indexOf('/auth/login')) { 
+  if (!~this.path.indexOf('/auth/login') && !~this.path.indexOf('/users')) { 
     const token = this.headers[TOKEN] || this.cookies.get(TOKEN, { signed: false });
     const ret = yield this.app.redis.get(`${option.prefix}:${token}`);
     if (!ret) {

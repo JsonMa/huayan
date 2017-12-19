@@ -18,10 +18,12 @@ module.exports = (app) => {
    * @property {number}  no              - 贺卡序列号
    * @property {uuid}    voice_id        - 贺卡录音id
    * @property {uuid}    video_id        - 贺卡视频id
+   * @property {uuid}    cover_id        - 贺卡视频封面id
    * @property {uuid}    blessing        - 祝福语
    * @property {uuid}    background_id   - 背景图 id
    * @property {array}   picture_ids     - 照片ids
    * @property {uuid}    user_id         - 商家id
+   * @property {string}  union_id        - 顾客的唯一身份认证
    * @property {number}  click           - 点击数量
    * @property {string}  status          - 贺卡状态['NONBLANK','BLANK']分别表示贺卡为空或者非空
    */
@@ -43,6 +45,10 @@ module.exports = (app) => {
       type: UUID,
       allowNull: true,
     },
+    cover_id: {
+      type: UUID,
+      allowNull: true,
+    },
     blessing: {
       type: STRING,
       allowNull: true,
@@ -58,11 +64,10 @@ module.exports = (app) => {
     },
     user_id: {
       type: UUID,
-      allowNull: true,
+      allowNull: false,
     },
     union_id: {
-      type: STRING,
-      allowNull: true,
+      type: STRING(32),
     },
     click: {
       type: INTEGER,
