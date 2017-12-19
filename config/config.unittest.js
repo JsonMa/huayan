@@ -1,6 +1,6 @@
 exports.sequelize = {
-  username: 'dbuser',
-  password: 'root123456',
+  username: 'postgres',
+  password: '123456',
   database: 'huayan',
   host: 'localhost',
 };

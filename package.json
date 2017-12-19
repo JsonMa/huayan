@@ -24,6 +24,7 @@
     "moment": "^2.19.3",
     "pg": "6.4.2",
     "pg-hstore": "2.3.2",
+    "querystring": "^0.2.0",
     "raven": "^2.2.1",
     "sequelize": "4.22.5",
     "underscore": "^1.8.3",

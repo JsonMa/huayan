@@ -188,7 +188,6 @@ module.exports = (app) => {
     async show() {
       const { ctx, service, showRule } = this;
       await ctx.validate(showRule);
-
       const { id } = ctx.params;
       const user = await service.user.getByIdOrThrow(id);
       delete user.dataValues.password;
@@ -205,15 +204,18 @@ module.exports = (app) => {
     async update() {
       const { ctx, service, updateRule } = this;
       await ctx.validate(updateRule);
-
+      ctx.authPermission();
       const {
         phone,
         password,
         avatar_id: avatarId,
         picture_ids: pictureIds,
       } = ctx.request.body;
+      const { id } = ctx.params;
 
-      const user = await service.user.getByIdOrThrow(ctx.params.id);
+      // 当前用户只能修改自己信息
+      ctx.assert(id === ctx.state.auth.user.role_id, 403);
+      const user = await service.user.getByIdOrThrow(id);
 
       // 验证图片是否存在
       /* istanbul ignore else */

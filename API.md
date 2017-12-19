@@ -4,7 +4,7 @@ info:
   version: "1.0"
   description: |
     ### session
-    由于一二期项目处于不同项目但使用同一登录状态，故使用access_token作为登录凭证，APP和PC均有效。
+    花言一期API使用access_token作为登录凭证，小程序、PC、APP均有效。
     PC还支持cookie，无需显示提供access_token
 
     ### responses
@@ -45,13 +45,13 @@ info:
 
     For example:
     ```
-    GET /posts?embed=user
+    GET /cards?embed=user
     {
       code: Integer,
       msg: String,
       {
-        posts: [Post],
-        users: [User]   // 返回posts中包含的user信息
+        cards: [Card],
+        users: [User]   // 返回cards中包含的user信息
       }
     }
     ```
@@ -79,13 +79,6 @@ info:
     - 15000 - 15999: Commodity 相关错误
     - 16000 - 16999: File 相关错误
     - 17000 - 17999: Card 相关错误
-    - 19000 - 19999: Post category 相关错误
-    - 20000 - 20999: Post comment 相关错误
-    - 21000 - 21999: Post hit 相关错误
-    - 22000 - 22999: Post vote 相关错误
-    - 23000 - 23999: Post 相关错误
-    - 24000 - 24999: Sensitive word 相关错误
-    - 25000 - 25999: Trade 相关错误
 
 
     | 状态码  | 含义          | 说明             |
@@ -119,12 +112,12 @@ info:
     | 16002 | file error          | 文件大小超出限制               |
     | 17001 | card error          | 贺卡不存在                    |    
 
-  title: "庶邦 API"
-  termsOfService: "http://172.19.3.186:25001/"
+  title: "花言 API"
+  termsOfService: "http://111.231.76.244:7001/"
   contact:
-    email: "xieguodong@wondertek.com"
-host: "172.19.3.186:25001"
-basePath: "/api/v2"
+    email: "mahao-0321@hotmail.com"
+host: "111.231.76.244:7001"
+basePath: "/api/v1"
 schemes:
   - http
 produces:
@@ -132,25 +125,21 @@ produces:
 consumes:
   - application/json
 tags:
-  - name: order
-  - name: logistics
-  - name: address
   - name: user
   - name: pagination
   - name: admin  
-  - name: post
-  - name: post_category
-  - name: sensitive_word
   - name: file
   - name: auth  
   - name: commodity
   - name: embed
+  - name: card
+  - name: blessing
 
 paths:
 
   /auth/login:
     post:
-      description: 模拟登录, 仅用户测试环境
+      description: 用户登录
       tags:
         - auth 
       parameters:
@@ -159,17 +148,9 @@ paths:
           schema:
             type: object
             required:
-              - name 
-              - role 
               - password
               - phone 
             properties:
-              name:
-                type: string                
-                description: 任意名字，数据库没有会新建用户
-              role:
-                type: string
-                description: admin 或者 user  
               phone:
                 type: string
               password:
@@ -181,933 +162,18 @@ paths:
             type: object
             properties:
               user: 
-                type: object
                 $ref: "#/definitions/User"
               token:
-                $ref: "#/definitions/Trade"
                 description: access_token
 
-
-  /users/{id}/orders/:
+  /auth/logout:
     get:
-      description: 获取用户订单列表
+      description: 退出登录
       tags:
-        - user
-        - pagination
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          type: string
-          format: uuid
-          required: true
-        - name: status
-          in: query
-          type: string
-          description: 取值于Order_Status
-        - name: embed
-          in: query
-          type: string 
-          description: 注入相关model, 取值于[user, commodity, trade], 支持多个 e.g embed=user,commodity
-      responses:
-        200:
-          description: 返回的order列表, order会携带commodity对象
-          schema:
-            type: object
-            properties:
-              count:
-                type: integer
-              start: 
-                type: integer
-              items:
-                type: array
-                items:
-                  $ref: "#/definitions/Order"
-
-  /users/{id}/addresses/:
-    get:
-      description: 获取用户收货地址列表
-      tags:
-        - user
-        - address
-        - pagination
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          type: string
-          format: uuid
-          required: true
-        - name: default 
-          in: query
-          type: string
-          description: true/false
-      responses:
-        200:
-          description: 返回的地址列表
-          schema:
-            type: object
-            properties:
-              count:
-                type: integer
-              start: 
-                type: integer
-              items:
-                type: array
-                items:
-                  $ref: "#/definitions/Address"
-
-  /users/{id}/posts:
-    get:
-      description: 获取用户帖子
-      tags:
-          - user
-          - post
-          - pagination
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          type: string
-          format: uuid
-          required: true
-      responses:
-          200:
-            description: Success
-            schema:
-              type: object
-              properties:
-                count:
-                  type: integer
-                start: 
-                  type: integer
-                items:
-                  type: array
-                  items:
-                    $ref: '#/definitions/Post'
-    
-
-  /orders/:
-    get:
-      description: 获取订单列表
-      tags:
-        - order
-        - pagination
-        - admin
-        - embed
-      parameters:
-        - name: status
-          in: query
-          type: string
-          description: 取值于Order_Status
-        - name: from
-          in: query
-          type: string
-          format: date
-          description: 下单开始时间
-        - name: to
-          in: query
-          type: string
-          description: 下单截至时间
-        - name: user_name
-          in: query
-          type: string
-          description: 用户名
-        - name: user_phone
-          in: query
-          type: string
-          description: 用户电话
-        - name: recipient_name
-          in: query
-          type: string
-          description: 收件人姓名
-        - name: recipient_phone
-          in: query
-          type: string
-          description: 收件人电话
-        - name: commodity_name
-          in: query
-          type: string
-          description: 商品名称
-        - name: order_no
-          in: query
-          type: string
-          description: 订单编号
-        - name: embed
-          in: query
-          type: string 
-          description: 注入相关model, 取值于[user, commodity, trade], 支持多个 e.g embed=user,commodity
-      responses:
-        200:
-          description: 返回的order列表, order会携带commodity、user、address、trade对象
-          schema:
-            type: object
-            properties:
-              count:
-                type: integer
-              start: 
-                type: integer
-              items:
-                type: array
-                items:
-                  $ref: "#/definitions/Order"
-    post:
-      tags:
-        - order
-      parameters:
-        - in: body
-          name: user
-          description: 创建订单
-          schema:
-            type: object
-            required:
-              - commodity_id
-            properties:
-              commodity_id:
-                type: string
-                format: uuid
-              address_id:
-                type: string
-                format: uuid
-              count:
-                type: integer 
-              commodity_attrs:
-                type: object 
-                description: |
-                  键值对存储, e.g. { size: 1, color: 'red' }
+        - auth 
       responses:
         200:
           description: Success
-          schema:
-            $ref: "#/definitions/Order"
-            
-  /orders/{id}:
-    get:
-      description: 获取订单
-      tags:
-        - order
-      parameters:
-        - name: id
-          in: path
-          description: Order ID
-          type: string
-          format: uuid
-          required: true
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Order"
-
-    patch:
-      description: 修改订单
-      tags:
-        - order
-      parameters:
-        - name: id
-          in: path
-          description: Order ID
-          type: string
-          format: uuid
-          required: true
-        - in: body
-          name: user
-          description: 修改订单
-          schema:
-            type: object
-            properties:
-              address_id: 
-                type: string
-              price:
-                type: integer
-                description: 需要admin权限
-              status:
-                type: string
-                description: 只能为'FINISHED', 表示确认收货
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Order"
-
-  /orders/{id}/logistics:
-    get:
-      description: 获取订单物流信息
-      tags:
-        - order
-        - logistics
-      parameters:
-        - name: id
-          in: path
-          description: Order ID
-          type: string
-          format: uuid
-          required: true
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Logistics"
-  
-  /trades/:
-    post:
-      description: 创建支付订单
-      tags:
-        - order
-      parameters:
-        - in: body
-          name: user
-          schema:
-            type: object
-            required:
-              - order_id
-              - type
-            properties:
-              order_id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                description: 取值于Order_Type
-      responses:
-        200:
-          description: Success
-          schema:
-            type: object
-            properties:
-              payload: 
-                type: object
-                description: 用于客服端创建订单的请求参数
-              trade:
-                $ref: "#/definitions/Trade"
-
-  /trades/{id}:
-    get:
-      description: 获取支付订单信息
-      tags:
-        - order
-      parameters:
-        - name: id
-          in: path
-          description: Trade ID
-          type: string
-          format: uuid
-          required: true
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Trade"
-
-  /logistics/:
-    post:
-      description: 创建物流信息, 订单自动切换至发货状态
-      tags:
-        - logistics
-      parameters:
-        - in: body
-          name: user
-          schema:
-            type: object
-            required:
-              - order_id
-              - company
-              - order_no
-            properties:
-              order_id:
-                type: string
-                format: uuid
-              company:
-                type: string
-              order_no:
-                type: string
-                description: 快递单号
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Logistics"
-
-  /addresses/:
-    post:
-      description: 创建收货地址
-      tags:
-        - address
-      parameters:
-        - in: body
-          name: user
-          schema:
-            type: object
-            required:
-              - name
-              - phone
-              - location
-            properties:
-              name:
-                type: string
-              phone:
-                type: string
-              location:
-                type: string
-              default:
-                type: boolean
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Address"
-  
-  /addresses/{id}:
-    get:
-      tags:
-        - address
-      description: 获取地址详情
-      parameters:
-        - name: id
-          in: path
-          description: Address ID
-          type: string
-          format: uuid
-          required: true
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Address"
-
-    delete:
-      tags:
-        - address
-      description: 删除地址
-      parameters:
-        - name: id
-          in: path
-          description: Address ID
-          type: string
-          format: uuid
-          required: true
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Address"
-            
-    patch:
-      tags:
-        - address
-      parameters:
-        - name: id
-          in: path
-          description: Address ID
-          type: string
-          format: uuid
-          required: true
-        - in: body
-          name: user
-          schema:
-            type: object
-            required:
-              - name
-              - phone
-              - location
-            properties:
-              name:
-                type: string
-              phone:
-                type: string
-              location:
-                type: string
-              default:
-                type: boolean
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/Address"
-
-  /posts:
-    get:
-      summary: 获取帖子列表
-      tags:
-        - post
-        - pagination
-        - embed
-      description: 获取帖子列表
-      parameters:
-        - name: from
-          in: query
-          description: 发帖开始时间(eg:from='2017-01-01'),
-          required: true
-          type: string
-          format: date
-        - name: to
-          in: query
-          description: 发帖截止时间
-          required: true
-          type: string
-          format: date
-        - name: nick_name
-          in: query
-          description: 发帖人昵称
-          type: string
-        - name: phone
-          in: query
-          description: 发帖人手机
-          type: string
-        - name: theme
-          in: query
-          description: 帖子主题
-          type: string
-        - name: state
-          in: query
-          description: 帖子状态,取值于Post_Status
-          type: string
-        - name: category_id
-          in: query
-          description: 帖子分类(不传:全部,number:分类id)
-          type: string
-          format: uuid
-        - name: query_type
-          in: query
-          type: string
-          default: 'NEW'
-          description: 取值于Post_Query_Type
-        - name: embed
-          in: query
-          type: string
-          description: 注入信息,enum=[user]
-      responses:
-        200:
-          description: Success
-          schema:
-            type: object
-            properties:
-              count:
-                type: integer
-              start: 
-                type: integer
-              items:
-                type: array
-                items:
-                  $ref: '#/definitions/Post'
-    post:
-      summary: 创建帖子
-      tags:
-        - post
-      description: 创建帖子
-      parameters:
-        - name: post
-          in: body
-          required: true
-          schema:
-            type: object
-            required:
-              - theme
-              - category_id
-              - content
-              - cover_ids
-            properties:
-              theme: 
-                type: string
-              category_id:
-                type: string
-                format: uuid
-              content:
-                type: string
-              cover_ids:
-                type: array
-                items:
-                  type: string
-                  format: uuid
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/Post'
-    delete:
-      summary: 批量删除帖子
-      tags:
-        - post
-      description: 批量删除帖子
-      parameters:
-        - name: post_ids
-          in: query
-          required: true
-          description: 删除的帖子id(eg:post_ids=1,2,3)
-          type: string
-      responses:
-        200:
-          description: Success
-          schema:
-            type: array
-            items:
-             $ref: '#/definitions/Post'
-
-  /posts/{id}:
-    get:
-      summary: 帖子详情
-      tags:
-        - post
-      description: 帖子详情
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 帖子id
-          type: string
-          format: uuid
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/Post'
-    patch:
-      summary: 修改帖子
-      tags:
-        - post
-      description: 修改帖子
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 帖子id
-          type: string
-          format: uuid
-        - name: post
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              theme: 
-                type: string
-              category_id:
-                type: string
-                format: uuid
-              content:
-                type: string
-              cover_ids:
-                type: array
-                items:
-                  type: string
-                  format: uuid
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/Post'
-
-  /posts/{id}/comments:
-    get:
-      summary: 获取帖子评论列表
-      tags:
-        - post
-        - pagination
-        - embed
-      description: 获取帖子评论列表
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 帖子id
-          format: uuid
-          type: string
-        - name: embed
-          in: query
-          type: string
-          description: 注入信息,enum=[user]
-      responses:
-        200:
-          description: Success
-          schema:
-            type: object
-            properties:
-              count:
-                type: integer
-              start: 
-                type: integer
-              items:
-                type: array
-                items:
-                  $ref: '#/definitions/PostComment'
-    post:
-      summary: 创建帖子评论
-      tags:
-        - post
-      description: 创建帖子评论
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 帖子id
-          format: uuid
-          type: string
-        - name: comment
-          in: body
-          required: true
-          schema:
-            required:
-              - content
-            properties:
-              content:
-                type: string
-                description: 评论内容
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/PostComment'
-
-  /posts/{id}/vote:
-    post:
-      summary: 点赞帖子
-      tags:
-        - post
-      description: 点赞帖子
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 帖子id
-          format: uuid
-          type: string
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/PostVote'
-    delete:
-      summary: 取消点赞
-      tags:
-        - post
-      description: 取消点赞
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 帖子id
-          format: uuid
-          type: string
-      responses:
-        200:
-          description: Success
-
-  /post_categories:
-    get:
-      summary: 获取帖子分类列表
-      tags:
-        - post_category
-      description: 获取帖子分类列表
-      responses:
-        200:
-          description: Success
-          schema:
-            type: array
-            items:
-             $ref: '#/definitions/PostCategory'
-    post:
-      summary: 创建帖子分类
-      tags:
-        - post_category
-        - admin  
-      description: 创建帖子分类
-      parameters:
-        - name: post_category
-          in: body
-          required: true
-          schema:
-            required:
-              - name
-              - cover_id
-            properties:
-              name:
-                type: string
-                description: 分类名称
-              cover_id:
-                type: string
-                description: 封面图片id
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/PostCategory'
-    delete:
-      summary: 删除帖子分类
-      tags:
-       - post_category
-       - admin  
-      description: 删除帖子分类
-      parameters:
-        - name: ids
-          in: query
-          required: true
-          type: string
-          description: 分类id
-      responses:
-        200:
-          description: Success
-          schema:
-            type: array
-            items:
-             $ref: '#/definitions/PostCategory'
-
-  /post_categories/{id}:
-    patch:
-      summary: 修改帖子分类
-      tags:
-       - post_category
-       - admin  
-      description: 修改帖子分类
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: 分类id
-          format: uuid
-        - name: post_category
-          in: body
-          required: true
-          schema:
-            properties:
-              name:
-                type: string
-                description: 分类名称
-              cover_id:
-                type: string
-                description: 封面图片id
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: '#/definitions/PostCategory'
-
-  /sensitive_words:
-    get:
-      summary: 获取敏感词列表
-      tags:
-        - sensitive_word
-        - admin 
-      description: 获取敏感词列表
-      parameters:
-        - name: word
-          in: query
-          description: 查询的敏感词
-          type: string
-      responses:
-        200:
-          description: Success
-          schema:
-            type: array
-            items:
-             $ref: '#/definitions/SensitiveWord'
-    post:
-      summary: 创建敏感词
-      tags:
-        - sensitive_word
-        - admin 
-      description: 创建敏感词
-      parameters:
-        - name: sensitive_word
-          in: body
-          required: true
-          schema:
-            type: object
-            required:
-              - key
-            properties:
-              key:
-                type: string
-      responses:
-          200:
-            description: Success
-            schema:
-              $ref: '#/definitions/SensitiveWord'
-    delete:
-      summary: 删除敏感词
-      tags:
-        - sensitive_word
-        - admin 
-      description: 删除敏感词
-      parameters:
-        - name: ids
-          in: query
-          required: true
-          description: 删除的敏感词的id(eg:ids=1,2,3)
-          type: string
-      responses:
-        200:
-          description: Success
-          schema:
-            type: array
-            items:
-             $ref: '#/definitions/SensitiveWord'
-
-  /sensitive_words/import:
-    post:
-      summary: 批量导入敏感词
-      tags:
-        - sensitive_word
-        - admin 
-      description: 批量导入敏感词
-      parameters:
-        - name: file
-          in: body
-          required: true
-          schema:
-            type: object
-            required:
-              - fid
-            properties:
-              fid:
-                type: string
-                format: uuid
-      responses:
-        200:
-          description: Success
-          schema:
-            type: array
-            items:
-             $ref: '#/definitions/SensitiveWord'
-
-  /sensitive_words/export:
-    get:
-      summary: 批量导出敏感词
-      tags:
-        - sensitive_word
-        - admin 
-      description: 批量导出敏感词
-      responses:
-        200:
-          description: 下载文件
-
-  /sensitive_words/{id}:
-    patch:
-      summary: 修改敏感词
-      tags:
-        - sensitive_word
-        - admin 
-      description: 修改敏感词
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: 敏感词id
-          format: uuid
-        - name: sensitive_word
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              key:
-                type: string
-      responses:
-          200:
-            description: Success
-            schema:
-              $ref: '#/definitions/SensitiveWord'
 
   /files:
     post:
@@ -1652,12 +718,17 @@ paths:
           required: true
           schema:
             required:
-              - picture_id
+              - cover_id
+              - video_id
             properties:
-              picture_id:
+              cover_id:
                 type: string
                 format: uuid
                 description: banner图id
+              video_id:
+                type: string
+                format: uuid
+                description: banner video id
       responses:
         200:
           description: Success
@@ -1700,16 +771,21 @@ paths:
         - name: picture
           in: body
           required: true
-          description: 封面图
+          description: banner封面图
           schema:
             type: object
             required:
-              - picture_id
+              - cover_id
+              - video_id
             properties:
-              picture_id:
+              cover_id:
                 type: string
                 format: uuid
-                description: 属性名
+                description: banner图id
+              video_id:
+                type: string
+                format: uuid
+                description: banner video id
       responses:
         200:
           description: Success
@@ -1717,45 +793,6 @@ paths:
             $ref: '#/definitions/Banner'
 
 definitions:
-
-  Order_Type:
-    type: string
-    enum: [
-      'WECHAT',
-      'ALIPAY'
-    ]
-
-  Order_Status:
-    type: string
-    enum: [
-      'CREATED',
-      'PAYED',
-      'SHIPMENT',
-      'FINISHED'
-    ]
-
-  Trade_Status:
-    type: string
-    enum: [
-      'PENDING',
-      'CLOSED',
-      'SUCCESS'
-    ]
-
-  Post_Status:
-    type: string
-    enum: [
-      'VALID',
-      'INVALID'
-    ]
-
-  Post_Query_Type:
-    description: 贴子查询类型(最新或最热)
-    type: string
-    enum: [
-      'NEW',
-      'HOT'
-    ]
 
   Commodity_Status:
     type: string
@@ -1770,199 +807,35 @@ definitions:
       id:
         type: string
         format: uuid
+      no:
+        type: integer
       name:
         type: string
       phone:
         type: string
-
-  Order:
-    properties:
-      id:
+      contact:
+        type: string
+      address:
+        type: string
+      avatar_id:
         type: string
         format: uuid
-      no:
+      card_num:
         type: integer
-      status:
-        $ref: "#/definitions/Order_Status"
-      commodity_price:
-        type: number
-        format: float
-      price:
-        type: number
-        format: float
-      user_id:
-        type: string
-        format: uuid
-      commodity_id:
-        type: string
-        format: uuid
-      commodity_attr: 
-        type: string
-      ommodity_attr_val:
-        type: string
-      address_id:
-        type: string
-        format: uuid
-      trade_id:
-        type: string
-        format: uuid
-
-  Trade:
-    properties:
-      id:
-        type: string
-        format: uuid
-      order_id:
-        type: string
-        format: uuid
-      trade_no:
-        type: string
-        description: 支付订单号
-      type:
-        type: string
-        enum: [
-          'WECHAT',
-          'ALIPAY'
-        ]
-      status:
-        $ref: "#/definitions/Trade_Status"
-
-  Address:
-    properties:
-      id:
-        type: string
-        format: uuid
-      user_id:
-        type: string
-        format: uuid
-      name:
-        type: string
-      phone:
-        type: string
-      location:
-        type: string
-      default:
-        type: boolean
-
-  Logistics:
-    properties:
-      id:
-        type: string
-        format: uuid
-      order_id:
-        type: string
-        format: uuid
-        description: 内部订单id
-      company:
-        type: string
-      order_no:
-        type: string
-        description: 物流订单号
-
-  Post:
-    properties:
-      id:
-        type: number
-        format: uuid
-      no:
+      card_total:
         type: integer
-      theme:
-        type: string
-        description: 帖子主题
-      theme_filted:
-        type: string
-        description: 已标记敏感词的帖子主题
-      content:
-        type: string
-        description: 帖子内容
-      content_filted:
-        type: string
-        description: 已标记敏感词的帖子内容
-      hits:
-        type: number
-        description: 浏览量
-      votes:
-        type: number
-        description: 点赞数
-      vote:
-        type: object
-        description: 点赞详情
-      comments:
-        type: number
-        description: 评论数
-      cover_ids:
+      picture_ids:
         type: array
+        description: 商品图片id
         items:
           type: string
           format: uuid
-        description: 帖子封面文件id数组
-      user_id:
+      url:
         type: string
-        description: 帖子所属用户id
-        format: uuid
-      category_id:
+      status:
+        $ref: "#/definitions/Commodity_Status"
+      role:
         type: string
-        description: 帖子所属分类id
-        format: uuid
-      sensitive_words:
-        type: array
-        description: 帖子敏感词
-        items:
-          type: string
-      user:
-        $ref: "#/definitions/User"
-
-  PostCategory:
-    properties:
-      id:
-        type: string
-        format: uuid
-      name:
-        type: string
-        description: 帖子分类名称
-      cover_id:
-        type: string
-        description: 分类封面id
-        format: uuid
-
-  PostComment:
-    properties:
-      id:
-        type: string
-        format: uuid
-      user_id:
-        type: string
-        format: uuid
-      post_id:
-        type: string
-        format: uuid
-      cotent:
-        type: string
-      content_filted:
-        type: string
-        description: 已过滤敏感词的评论内容
-
-  PostVote:
-    description: 帖子点赞
-    properties:
-      id:
-        type: string
-        format: uuid
-      user_id:
-        type: string
-        format: uuid
-      post_id:
-        type: string
-        format: uuid
-
-  SensitiveWord:
-    properties:
-      id:
-        type: string
-        format: uuid
-      key:
-        type: string
-        description: 敏感词关键字
 
   File:
     properties:
@@ -2064,6 +937,9 @@ definitions:
       id:
         type: string
         format: uuid
-      picture_id:
+      cover_id:
+        type: string
+        format: uuid
+      video_id:
         type: string
         format: uuid
