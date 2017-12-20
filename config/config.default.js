@@ -102,10 +102,10 @@ module.exports = () => {
 
   // 易联云配置
   exports.yLink = {
+    // api url
     base: 'https://open-api.10ss.net',
     authorize: '/oauth/authorize',
-    accessToken: '/oauth/oauth',
-    refreshToken: '/oauth/oauth',
+    token: '/oauth/oauth',
     addMachineAuth: '/printer/addprinter',
     delMachineAuth: '/printer/deleteprinter',
     menuCreate: '/printmenu/addprintmenu',
@@ -120,6 +120,8 @@ module.exports = () => {
     removeLogo: '/printer/deleteicon',
     order: '/printer/getorder',
     btnPrint: '/printer/btnprint',
+
+    // 配置信息
     open: {
       redirect_uri: 'http://b2c3217a.ngrok.io/code', // 开放型应用才需要这个
       state: 'test', // 开放型应用才需要这个
@@ -127,12 +129,10 @@ module.exports = () => {
     personal: {
       machine_code: '', // 终端号，打印机底部标签上获取
       msign: '', // 终端密钥，打印机底部标签上获取
-      partner: '19215', // 用户id
-      apikey : '88ae9efa741a2480f4b4c8710cd1210a70883a66', // API密匙
     },
     type: 1, // 1 自有应用 2 开放应用
-    ak: '', // 应用ID
-    sk: '', // 应用秘钥
+    client_id: '1052527659', // 应用ID
+    api_key: '288ffb0e77e30f6b17ea518f3ee4cea2', // 应用秘钥
   };
 
   return exports;

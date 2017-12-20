@@ -79,6 +79,7 @@ info:
     - 15000 - 15999: Commodity 相关错误
     - 16000 - 16999: File 相关错误
     - 17000 - 17999: Card 相关错误
+    - 18000 - 18999: Printer 相关错误
 
 
     | 状态码  | 含义          | 说明             |
@@ -118,7 +119,8 @@ info:
     | 17006 | card error          | 录像文件非视频类型              |
     | 17007 | card error          | 录像封面非图片类型              |
     | 17008 | card error          | 贺卡背景非图片类型              |
-    | 17009 | card error          | 创建贺卡失败，剩余数量小于1      |    
+    | 17009 | card error          | 创建贺卡失败，剩余数量小于1      |
+    | 18001 | printer error       | printer权限认证相关错误         |
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

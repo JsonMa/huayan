@@ -52,4 +52,11 @@ module.exports = (app) => {
 
   // error
   app.get('/error', 'error.index');
+
+  // yLink
+  app.get(`${prefix}/ylink/token`, 'ylink.accessToken');
+  app.get(`${prefix}/ylink/token/refresh`, 'ylink.refreshToken');
+  app.get(`${prefix}/ylink/push`, 'ylink.pushValidate');
+  app.post(`${prefix}/ylink/push`, 'ylink.pushData');
 };
+
