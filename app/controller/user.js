@@ -214,7 +214,7 @@ module.exports = (app) => {
       const { id } = ctx.params;
 
       // 当前用户只能修改自己信息
-      ctx.assert(id === ctx.state.auth.user.role_id, 403);
+      ctx.assert(id === ctx.state.auth.user.id, 403);
       const user = await service.user.getByIdOrThrow(id);
 
       // 验证图片是否存在
