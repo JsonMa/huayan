@@ -1,3 +1,4 @@
+// @ts-nocheck
 const {
   VError,
 } = require('verror');
@@ -82,7 +83,7 @@ module.exports = {
   /**
    * 检查用户权限, 检查失败直接抛出403异常
    *
-   * @param {uuid} userId 如果当前用户为admin, 不检查user通过；如果user为普通用户，检测当前用户id是否为user_id
+   * @param {uuid} userId 如果当前用户为admin, 则不检查；如果user为普通用户，检测当前用户id是否为user_id
    * @return {undefined}
    */
   checkPermission(userId) {
@@ -166,5 +167,17 @@ module.exports = {
     const { message = '服务器内部错误', status = 500 } = err;
     const errorView = this.app.errorTemplate.replace(/{{ error_status }}/gi, status).replace(/{{ error_message }}/gi, message);
     return Buffer.from(errorView);
+  },
+
+  /**
+   * 验证用户是否为管理员
+   *
+   * @return {boolean} 返回验证结果
+   */
+  isAdmin() {
+    this.assert(this.state.auth, '使用了用户认证，但未开启auth中间件', 500);
+
+    const { role } = this.state.auth;
+    return role === '1';
   },
 };

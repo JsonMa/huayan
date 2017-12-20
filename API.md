@@ -142,6 +142,7 @@ tags:
   - name: embed
   - name: card
   - name: blessing
+  - name: guest
 
 paths:
 
@@ -800,6 +801,143 @@ paths:
           schema:
             $ref: '#/definitions/Banner'
 
+  /cards:
+    get:
+      summary: 贺卡列表
+      tags:
+        - card
+        - admin
+        - pagination
+        - embed
+      description: 根据查询参数，返回贺卡列表
+      parameters:
+        - name: status
+          in: query
+          description: 贺卡状态,取值于Card_status
+          type: string
+        - name: user_id
+          in: query
+          description: 商家id
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: 贺卡列表
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+              start:
+                type: integer
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Card'
+    post:
+      tags:
+        - card
+        - user
+      summary: 添加贺卡
+      description: 添加新的贺卡
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Card'
+             
+  /cards/{id}:
+    get:
+      tags:
+        - card
+      summary: 贺卡详情
+      description: 根据id查询贺卡详情
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 贺卡id
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Card'
+    patch:
+      summary: 修改贺卡
+      description: 根据id修改贺卡信息
+      tags:
+        - card
+        - guest
+      parameters:
+        - name: id
+          in: path
+          description: 贺卡id
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: card
+          description: 修改贺卡信息
+          required: true
+          schema:
+            type: object
+            properties:
+              voice_id:
+                type: string
+                format: uuid
+                description: 录音文件id
+              video_id:
+                type: string
+                format: uuid
+                description: 录像文件id
+              cover_id:
+                type: string
+                description: 录像封面id
+              status:
+                type: string
+                description: 贺卡状态，取值于Card_Status
+              union_id:
+                type: string
+                format: uuid
+                description: 编辑者唯一识别号
+              background_id:
+                type: string
+                format: uuid
+                description: 贺卡背景id
+              picture_ids:
+                type: array
+                description: 照片
+                items:
+                  type: string
+                  format: uuid
+              blessing:
+                type: string
+                description: 贺卡祝福语
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Card"
+    delete:
+      tags:
+        - card
+        - admin
+      summary: 删除贺卡
+      description: 删除指定贺卡
+      parameters:
+        - name: id
+          in: path
+          description: 贺卡id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Card'
 definitions:
 
   Commodity_Status:
@@ -808,6 +946,14 @@ definitions:
     enum: [
       'ON',
       'OFF',
+    ]
+
+  Card_Status:
+    type: string
+    description: 空/非空状态
+    enum: [
+      'BLANK',
+      'NONBLANK',
     ]
 
   User:
@@ -951,3 +1097,53 @@ definitions:
       video_id:
         type: string
         format: uuid
+        
+  Card:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        description: 贺卡id
+      no:
+        type: number
+        description: 贺卡序号
+      voice_id:
+        type: string
+        format: uuid
+        description: 录音文件id
+      video_id:
+        type: string
+        format: uuid
+        description: 录像文件id
+      cover_id:
+        type: string
+        format: uuid
+        description: 录像封面文件id
+      blessing:
+        type: string
+        description: 祝福语
+      background_id:
+        type: string
+        format: uuid
+        description: 背景图id
+      click:
+        type: number
+        default: 0
+        description: 点击量
+      status:
+        $ref: "#/definitions/Card_Status"
+      picture_ids:
+        type: array
+        description: 照片id
+        items:
+          type: string
+          format: uuid
+      union_id:
+        type: string
+        format: uuid
+        description: 贺卡编辑者id
+      user_id:
+        type: string
+        format: uuid
+        description: 商家id

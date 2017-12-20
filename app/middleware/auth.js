@@ -15,7 +15,7 @@ const SESSION_RULE = {
 
 /* istanbul ignore next */
 module.exports = option => function* (next) {
-  if (!~this.path.indexOf('/auth/login') && !~this.path.indexOf('/users')) { 
+  if (!~this.path.indexOf('/auth/login') && !~this.path.indexOf('/users')) { // eslint-disable-line
     const token = this.headers[TOKEN] || this.cookies.get(TOKEN, { signed: false });
     const ret = yield this.app.redis.get(`${option.prefix}:${token}`);
     if (!ret) {
