@@ -1,5 +1,5 @@
 const imagemin = require('imagemin');
-const imageminPngquant = require('imagemin-pngquant');
+// const imageminPngquant = require('imagemin-pngquant');
 const imageminJpegRe = require('imagemin-jpeg-recompress');
 const imageminOptipng = require('imagemin-optipng');
 
@@ -19,7 +19,7 @@ module.exports = () => function* compressImage(next) {
   yield imagemin(pathArray, compress.output_dir, {
     plugins: [
       imageminOptipng({ optimizationLevel: compress.png_level }),
-      imageminPngquant({ quality: compress.png_quality, speed: 10 }),
+      // imageminPngquant({ quality: compress.png_quality, speed: 10 }),
       imageminJpegRe({
         quality: compress.jpg_level,
         min: compress.jpg_quality,

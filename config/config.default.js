@@ -93,6 +93,13 @@ module.exports = () => {
     pageUrl: '/error',
   };
 
+  // 安全配置中禁用csrf
+  exports.security = {
+    csrf: {
+      enable: false,
+    },
+  };
+
   // 易联云配置
   exports.yLink = {
     base: 'https://open-api.10ss.net',
@@ -118,8 +125,10 @@ module.exports = () => {
       state: 'test', // 开放型应用才需要这个
     },
     personal: {
-      machine_code: '', // 终端号
-      msign: '', // 终端密钥
+      machine_code: '', // 终端号，打印机底部标签上获取
+      msign: '', // 终端密钥，打印机底部标签上获取
+      partner: '19215', // 用户id
+      apikey : '88ae9efa741a2480f4b4c8710cd1210a70883a66', // API密匙
     },
     type: 1, // 1 自有应用 2 开放应用
     ak: '', // 应用ID

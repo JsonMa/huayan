@@ -204,7 +204,6 @@ module.exports = (app) => {
     async update() {
       const { ctx, service, updateRule } = this;
       await ctx.validate(updateRule);
-      ctx.authPermission();
       const {
         phone,
         password,
@@ -214,7 +213,7 @@ module.exports = (app) => {
       const { id } = ctx.params;
 
       // 当前用户只能修改自己信息
-      ctx.assert(id === ctx.state.auth.user.id, 403);
+      ctx.userPermission(id);
       const user = await service.user.getByIdOrThrow(id);
 
       // 验证图片是否存在

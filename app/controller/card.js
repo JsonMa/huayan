@@ -144,6 +144,8 @@ module.exports = (app) => {
 
       const { id } = ctx.params;
       const card = await service.card.getByIdOrThrow(id);
+      if (card) card.click += 1;
+      await card.save();
 
       ctx.jsonBody = card;
     }
