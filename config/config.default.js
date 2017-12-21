@@ -127,8 +127,8 @@ module.exports = () => {
       state: 'test', // 开放型应用才需要这个
     },
     personal: {
-      machine_code: '', // 终端号，打印机底部标签上获取
-      msign: '', // 终端密钥，打印机底部标签上获取
+      machine_code: '4004528990', // 终端号，打印机底部标签上获取
+      msign: 'uqtcahuk78nv', // 终端密钥，打印机底部标签上获取
     },
     type: 1, // 1 自有应用 2 开放应用
     client_id: '1052527659', // 应用ID

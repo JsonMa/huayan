@@ -59,7 +59,6 @@ module.exports = (app) => {
 
       await app.redis.set('token:access', result.data.body.access_token);
       await app.redis.set('token:refresh', result.data.body.refresh_token);
-      await app.redis.set('token:machine_code', result.data.body.machine_code);
     }
 
     /**
@@ -86,6 +85,68 @@ module.exports = (app) => {
       const { sign } = ctx.request.body;
       ctx.status = 200;
       ctx.body = { data: 'OK' };
+    }
+
+    /**
+     * 易联云-生成打印菜单
+     *
+     * @returns {null} 无响应信息
+     * @memberof ylinkController
+     */
+    async menuCreate() {
+      const { ctx } = this;
+      const { yLink } = app.config;
+      const accessToken = await app.redis.get('token:access');
+
+      if (accessToken == null || accessToken === '') ctx.error(404, 'access token Not Found');
+
+      const data = {
+        content: {
+          printmenu: new Array(`${encodeURIComponent('测5试')}`, `${encodeURIComponent('http://test')}`), // eslint-disable-line 
+        },
+        access_token: accessToken,
+        machine_code: yLink.personal.machine_code,
+        client_id: yLink.client_id,
+      };
+
+      // 生成订单
+      const result = await ctx.curl(`${yLink.base}${yLink.menuCreate}`, {
+        method: 'POST',
+        data: ctx.helper.printer.genSign(data),
+        dataType: 'json', // 以JSON格式处理返回的响应body
+      });
+
+      ctx.error(result.data.error === '0', result.data.error_description, 18001);
+    }
+
+    /**
+     * 易联云-打印
+     *
+     * @returns {null} 无返回内容
+     * @memberof ylinkController
+     */
+    async print() {
+      const { ctx } = this;
+      const { yLink } = app.config;
+      const accessToken = await app.redis.get('token:access');
+
+      const content = '<QR>http://www.baidu.com</QR>';
+
+      const data = {
+        client_id: yLink.client_id,
+        access_token: accessToken,
+        machine_code: yLink.personal.machine_code,
+        origin_id: ctx.helper.printer.uuid(),
+        content,
+      };
+
+      const result = await ctx.curl(`${yLink.base}${yLink.printIndex}`, {
+        method: 'POST',
+        data: ctx.helper.printer.genSign(data),
+        dataType: 'json', // 以JSON格式处理返回的响应body
+      });
+
+      ctx.error(result.data.error === '0', result.data.error_description, 18001);
     }
   }
 

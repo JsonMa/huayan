@@ -58,5 +58,7 @@ module.exports = (app) => {
   app.get(`${prefix}/ylink/token/refresh`, 'ylink.refreshToken');
   app.get(`${prefix}/ylink/push`, 'ylink.pushValidate');
   app.post(`${prefix}/ylink/push`, 'ylink.pushData');
+  app.post(`${prefix}/ylink/menu`, 'ylink.menuCreate');
+  app.post(`${prefix}/ylink/print`, 'ylink.print');
 };
 
