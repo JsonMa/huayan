@@ -24,7 +24,7 @@ module.exports = (app) => {
       primaryKey: true,
     },
     name: {
-      type: STRING(64),
+      type: STRING(128),
       allowNull: false,
     },
     path: {
