@@ -25,6 +25,7 @@ module.exports = (app) => {
    * @property {uuid}    user_id         - 商家id
    * @property {string}  union_id        - 顾客的唯一身份认证
    * @property {number}  click           - 点击数量
+   * @property {uuid}    category_id     - 贺卡分类
    * @property {string}  status          - 贺卡状态['NONBLANK','BLANK']分别表示贺卡为空或者非空
    */
   const Card = app.model.define('card', {
@@ -63,6 +64,10 @@ module.exports = (app) => {
       allowNull: true,
     },
     user_id: {
+      type: UUID,
+      allowNull: false,
+    },
+    category_id: {
       type: UUID,
       allowNull: false,
     },

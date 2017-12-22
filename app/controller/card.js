@@ -24,6 +24,7 @@ module.exports = (app) => {
               'BLANK',
             ],
           },
+          category_id: this.ctx.helper.rule.uuid,
           user_id: this.ctx.helper.rule.uuid,
           ...this.ctx.helper.rule.pagination,
         },
@@ -109,6 +110,23 @@ module.exports = (app) => {
     }
 
     /**
+     * 参数规则-创建贺卡
+     *
+     * @readonly
+     * @memberof CardController
+     */
+    get createRule() {
+      return {
+        properties: {
+          category_id: this.ctx.helper.rule.uuid,
+        },
+        required: ['category_id'],
+        $async: true,
+        additionalProperties: false,
+      };
+    }
+
+    /**
      * 获取贺卡列表
      *
      * @memberof CardController
@@ -119,11 +137,11 @@ module.exports = (app) => {
       const { card } = ctx.service;
       ctx.authPermission();
       const {
-        user_id: userId, sort, start, count, status,
+        user_id: userId, sort, start, count, status, category_id: categoryId,
       } = await ctx.validate(indexRule, ctx.helper.preprocessor.pagination);
 
       // 获取贺卡列表
-      const cards = await card.fetch(userId, status, start, count, sort);
+      const cards = await card.fetch(userId, status, categoryId, start, count, sort);
 
       ctx.jsonBody = Object.assign({
         start,
@@ -157,14 +175,15 @@ module.exports = (app) => {
      * @returns {object} 新建的贺卡
      */
     async create() {
-      const { ctx, service } = this;
+      const { ctx, service, createRule } = this;
       ctx.authPermission();
+      const { category_id: categoryId } = await ctx.validate(createRule);
       const { id } = ctx.state.auth.user;
 
       // 创建贺卡
       const user = await service.user.getByIdOrThrow(id);
       ctx.error(user.card_num >= 1, '创建贺卡失败，剩余数量小于1', 17009);
-      const card = await service.card.create(id);
+      const card = await service.card.create(id, categoryId);
       if (card) {
         user.card_num -= 1;
         await user.save();
