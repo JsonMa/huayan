@@ -80,6 +80,7 @@ info:
     - 16000 - 16999: File 相关错误
     - 17000 - 17999: Card 相关错误
     - 18000 - 18999: Printer 相关错误
+    - 19000 - 19999: Card category 相关错误
 
 
     | 状态码  | 含义          | 说明             |
@@ -121,6 +122,10 @@ info:
     | 17008 | card error          | 贺卡背景非图片类型              |
     | 17009 | card error          | 创建贺卡失败，剩余数量小于1      |
     | 18001 | printer error       | printer权限认证相关错误         |
+    | 19001 | card category error       | 贺卡背景图片重复/丢失或包含非图片类型文件 |
+    | 19002 | card category error       | 贺卡背景音乐重复/丢失或包含非音频类型文件 |
+    | 19003 | card category error       | 贺卡分类已经存在 |
+    | 19004 | card category error       | 贺卡分类中存在关联贺卡 |
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

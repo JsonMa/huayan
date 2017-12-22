@@ -45,7 +45,7 @@ module.exports = (app) => {
       defaultValue: [],
     },
     blessings: {
-      type: ARRAY(STRING),
+      type: ARRAY(STRING(64)),
       allowNull: false,
       defaultValue: [],
     },
