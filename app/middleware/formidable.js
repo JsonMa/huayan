@@ -21,7 +21,7 @@ module.exports = options => function* (next) {
     });
 
     form.on('fileBegin', (name, file) => {
-      const validate = /.(jpg|jpeg|png|xlsx|xls|txt|gif|bmp|mp4|mp3|silk)$/i.test(file.name);
+      const validate = /.(jpg|jpeg|png|xlsx|xls|txt|gif|bmp|mp4|mp3|silk|m4a)$/i.test(file.name);
       /* istanbul ignore next */
       if (!validate) {
         // 停止接收文件并抛出错误
