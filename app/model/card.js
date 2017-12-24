@@ -21,7 +21,7 @@ module.exports = (app) => {
    * @property {uuid}    cover_id        - 贺卡视频封面id
    * @property {uuid}    blessing        - 祝福语
    * @property {uuid}    background_id   - 背景图 id
-   * @property {array}   picture_ids     - 照片ids
+   * @property {uuid}    picture_id      - 照片id
    * @property {uuid}    user_id         - 商家id
    * @property {string}  union_id        - 顾客的唯一身份认证
    * @property {number}  click           - 点击数量
@@ -54,10 +54,9 @@ module.exports = (app) => {
       type: STRING,
       allowNull: true,
     },
-    picture_ids: {
-      type: ARRAY(UUID),
-      allowNull: false,
-      defaultValue: [],
+    picture_id: {
+      type: UUID,
+      allowNull: true,
     },
     background_id: {
       type: UUID,

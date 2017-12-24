@@ -74,10 +74,7 @@ module.exports = (app) => {
             maxLength: 36,
             minLength: 1,
           },
-          picture_ids: {
-            type: 'array',
-            items: this.ctx.helper.rule.uuid,
-          },
+          picture_id: this.ctx.helper.rule.uuid,
           status: {
             type: 'string',
             enum: [
@@ -194,7 +191,7 @@ module.exports = (app) => {
         voice_id: voiceId,
         video_id: videoId,
         cover_id: coverId,
-        picture_ids: pictureIds,
+        picture_id: pictureId,
         background_id: backgroundId,
         category_id: categoryId,
         union_id: unionId,
@@ -209,10 +206,9 @@ module.exports = (app) => {
 
       // 验证图片是否存在
       /* istanbul ignore else */
-      if (pictureIds) {
-        ctx.error(pictureIds.length <= 5 && pictureIds.length >= 1, '贺卡照片数量需在1~5张范围内', 17004);
-        const files = await service.file.count(pictureIds, 'image');
-        ctx.error(files.count === pictureIds.length, '贺卡照片重复/丢失或包含非图片类型文件', 17005);
+      if (pictureId) {
+        const file = await service.file.getByIdOrThrow(pictureId);
+        ctx.error(!!~file.type.indexOf('image/'), '照片非图片类型', 17010, 400); // eslint-disable-line
       }
 
       /* istanbul ignore else */
@@ -260,10 +256,25 @@ module.exports = (app) => {
       const { id } = await ctx.validate(destroyRule);
 
       // 查询并删除指定的贺卡
-      const card = await service.card.getByIdOrThrow(id);
-      await service.card.delete(id);
+      await service.card.getByIdOrThrow(id);
+      const deletedCard = await service.card.delete(id);
+      const {
+        video_id: videoId,
+        voice_id: voiceId,
+        cover_id: coverId,
+        picture_id: pictureId,
+      } = deletedCard;
 
-      ctx.jsonBody = card;
+      /* istanbul ignore next */
+      if (videoId) await service.file.delete(videoId);
+      /* istanbul ignore next */
+      if (voiceId) await service.file.delete(voiceId);
+      /* istanbul ignore next */
+      if (coverId) await service.file.delete(coverId);
+      /* istanbul ignore next */
+      if (pictureId) await service.file.delete(pictureId);
+
+      ctx.jsonBody = deletedCard;
     }
   }
 

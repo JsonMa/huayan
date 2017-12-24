@@ -88,6 +88,21 @@ module.exports = (app) => {
       ctx.attachment(file.name);
       ctx.set('Cache-Control', 'max-age=8640000');
     }
+
+    /**
+     * 删除文件
+     *
+     * @returns {object} 被删除的文件
+     * @memberof fileController
+     */
+    async delete() {
+      const { ctx, service, showRule } = this;
+      const { id } = await ctx.validate(showRule);
+      await service.file.getByIdOrThrow(id);
+
+      const file = await ctx.service.file.delete(id);
+      ctx.jsonBody = file;
+    }
   }
   return fileController;
 };

@@ -121,6 +121,7 @@ info:
     | 17007 | card error          | 录像封面非图片类型              |
     | 17008 | card error          | 贺卡背景非图片类型              |
     | 17009 | card error          | 创建贺卡失败，剩余数量小于1      |
+    | 17010 | card error          | 照片非图片类型文件              |    
     | 18001 | printer error       | printer权限认证相关错误         |
     | 19001 | card category error       | 贺卡背景图片重复/丢失或包含非图片类型文件 |
     | 19002 | card category error       | 贺卡背景音乐重复/丢失或包含非音频类型文件 |
@@ -913,12 +914,10 @@ paths:
                 type: string
                 format: uuid
                 description: 贺卡背景id
-              picture_ids:
-                type: array
-                description: 照片
-                items:
-                  type: string
-                  format: uuid
+              picture_id:
+                type: string
+                format: uuid
+                description: 照片id
               blessing:
                 type: string
                 description: 贺卡祝福语
@@ -1140,12 +1139,10 @@ definitions:
         description: 点击量
       status:
         $ref: "#/definitions/Card_Status"
-      picture_ids:
-        type: array
+      picture_id:
+        type: string
+        format: uuid
         description: 照片id
-        items:
-          type: string
-          format: uuid
       union_id:
         type: string
         format: uuid

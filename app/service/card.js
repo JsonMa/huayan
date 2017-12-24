@@ -150,6 +150,7 @@ class CardService extends Service {
       where: {
         id,
       },
+      force: true,
     });
   }
 }

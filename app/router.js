@@ -42,6 +42,7 @@ module.exports = (app) => {
 
   // file
   app.get(`${prefix}/files/:id`, 'file.show');
+  // app.delete(`${prefix}/files/:id`, 'file.delete');
   app.post(`${prefix}/files`, formidable(app.config.formidable), compress(), 'file.upload');
 
   // banner
