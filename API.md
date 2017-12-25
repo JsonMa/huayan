@@ -150,6 +150,7 @@ tags:
   - name: embed
   - name: card
   - name: blessing
+  - name: cardCategory
   - name: guest
 
 paths:
@@ -853,7 +854,7 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/Card'
-             
+
   /cards/{id}:
     get:
       tags:
@@ -1103,7 +1104,7 @@ definitions:
       video_id:
         type: string
         format: uuid
-        
+
   Card:
     type: object
     properties:
