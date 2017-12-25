@@ -163,7 +163,7 @@ module.exports = (app) => {
       }
 
       await service.cardCategory.isExisted(name);
-      const cardCategory = await app.model.cardCategory.create(ctx.request.body);
+      const cardCategory = await app.model.CardCategory.create(ctx.request.body);
 
       ctx.jsonBody = cardCategory;
     }
@@ -194,7 +194,7 @@ module.exports = (app) => {
         ctx.error(files.count === musicIds.length, '贺卡背景音乐重复/丢失或包含非音频类型文件', 19002);
       }
 
-      await service.cardCategory.isExisted(name);
+      if (name) await service.cardCategory.isExisted(name);
 
       const cardCategory = await service.cardCategory.getByIdOrThrow(ctx.params.id);
       Object.assign(cardCategory, ctx.request.body);

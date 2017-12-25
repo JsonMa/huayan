@@ -21,6 +21,12 @@ module.exports = (app) => {
   app.patch(`${prefix}/cards/:id`, 'card.update');
   app.delete(`${prefix}/cards/:id`, 'card.destroy');
 
+  // card category
+  app.get(`${prefix}/card_categories`, 'cardCategory.index');
+  app.post(`${prefix}/card_categories`, 'cardCategory.create');
+  app.delete(`${prefix}/card_categories/:id`, 'cardCategory.destroy');
+  app.patch(`${prefix}/card_categories/:id`, 'cardCategory.update');
+
   // commodity
   app.get(`${prefix}/commodities`, 'commodity.index');
   app.get(`${prefix}/commodities/:id`, 'commodity.show');
