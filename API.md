@@ -150,7 +150,7 @@ tags:
   - name: embed
   - name: card
   - name: blessing
-  - name: cardCategory
+  - name: card_category
   - name: guest
 
 paths:
@@ -945,6 +945,132 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/Card'
+
+  /card_categories:
+    get:
+      tags:
+        - card_category
+        - pagination
+      summary: 贺卡分类列表
+      description: 获取贺卡分类列表
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+              start:
+                type: integer
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/CardCategory'
+    post:
+      tags:
+        - card_category
+        - admin
+      summary: 添加贺卡分类
+      description: 添加贺卡分类
+      parameters:
+        - name: card_category
+          in: body
+          required: true
+          schema:
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                description: 商品类名
+              music_ids:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                description: 背景音乐ids
+              background_ids:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                description: 背景图
+              blessing:
+                type: array
+                items:
+                  type: string
+                description: 祝福语
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/CardCategory'
+
+  /card_categories/{id}:
+    patch:
+      tags:
+       - card_category
+       - admin
+      description: 修改贺卡分类
+      summary: 修改贺卡分类
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 贺卡分类id
+          format: uuid
+        - name: card_category
+          in: body
+          required: true
+          schema:
+            properties:
+              name:
+                type: string
+                description: 商品类名
+              music_ids:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                description: 背景音乐ids
+              background_ids:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                description: 背景图
+              blessing:
+                type: array
+                items:
+                  type: string
+                description: 祝福语
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/CardCategory'
+    
+    delete:
+      tags:
+        - card_category
+        - admin
+      description: 根据id删除贺卡分类
+      summary: 删除指定贺卡分类
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 贺卡分类id
+          format: uuid
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/CardCategory'
+
 definitions:
 
   Commodity_Status:
@@ -1104,6 +1230,35 @@ definitions:
       video_id:
         type: string
         format: uuid
+        
+  CardCategory:
+    properties:
+      id:
+        type: string
+        format: uuid
+      no:
+        type: number
+        description: 贺卡分类序号
+      name:
+        type: string
+        description: 分类名
+      background_ids:
+        type: array
+        description: 背景图
+        items:
+          type: string
+          format: uuid
+      music_ids:
+        type: array
+        description: 背景音乐
+        items:
+          type: string
+          format: uuid
+      blessings:
+        type: array
+        description: 祝福语
+        items:
+          type: string
 
   Card:
     type: object
