@@ -96,6 +96,7 @@ info:
     | 10002 | auth error          | 用户名或密码错误               |    
     | 10003 | user error          | 用户已存在                    |    
     | 10004 | user error          | 用户不存在                    |
+    | 10005 | user error          | 不能减少公众号跳转数            |    
     | 11001 | banner error          | 视频封面非图片类型文件        |
     | 11002 | banner error          | 非视频类型文件               |
     | 11003 | banner error          | banner不存在                |    

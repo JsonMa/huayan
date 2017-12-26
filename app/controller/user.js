@@ -96,6 +96,9 @@ module.exports = (app) => {
             maxLength: 20,
             minLength: 1,
           },
+          jump_num: {
+            type: 'number',
+          },
           address: {
             type: 'string',
             maxLength: 30,
@@ -209,12 +212,19 @@ module.exports = (app) => {
         password,
         avatar_id: avatarId,
         picture_ids: pictureIds,
+        jump_num: jumpNum,
       } = ctx.request.body;
       const { id } = ctx.params;
 
       // 当前用户只能修改自己信息
       ctx.userPermission(id);
       const user = await service.user.getByIdOrThrow(id);
+
+      // 修改公众号跳转数量
+      if (jumpNum) {
+        ctx.error(Math.floor(jumpNum) >= user.jump_num, '不能减少公众号跳转数', 10005);
+        user.jump_num = jumpNum;
+      }
 
       // 验证图片是否存在
       /* istanbul ignore else */

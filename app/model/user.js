@@ -27,6 +27,7 @@ module.exports = (app) => {
      * @property {string}  password       - 密码,md5加密后的值
      * @property {number}  card_num       - 贺卡剩余数量
      * @property {number}  card_total     - 贺卡总数
+     * @property {number}  jump_num       - 公众号跳转数量
      */
   const User = app.model.define('user', {
     id: {
@@ -63,6 +64,11 @@ module.exports = (app) => {
       allowNull: true,
     },
     card_num: {
+      type: INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    jump_num: {
       type: INTEGER,
       allowNull: false,
       defaultValue: 0,
