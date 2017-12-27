@@ -1,5 +1,6 @@
 module.exports = (app) => {
   const { formidable, compress } = app.middleware;
+  const wechat = require('co-wechat-body');
 
   /* istanbul ignore next */
   const prefix = app.config.noPrefix ? '' : '/api/v1';
@@ -67,5 +68,16 @@ module.exports = (app) => {
   app.post(`${prefix}/ylink/push`, 'ylink.pushData');
   app.post(`${prefix}/ylink/menu`, 'ylink.menuCreate');
   app.post(`${prefix}/ylink/print`, 'ylink.print');
+
+  // order 订单
+  app.post(`${prefix}/orders`, 'order.create');
+  app.get(`${prefix}/orders`, 'order.list');
+  app.get(`${prefix}/orders/:id`, 'order.fetch');
+  app.patch(`${prefix}/orders/:id`, 'order.patch');
+
+  // trade 交易
+  app.post(`${prefix}/trades`, 'trade.create');
+  app.get(`${prefix}/trades/:id`, 'trade.fetch');
+  app.post('wechat_notify', `${prefix}/trades/wechat_notify`, wechat(), 'trade.wechatNotify');
 };
 

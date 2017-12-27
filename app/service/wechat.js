@@ -207,7 +207,6 @@ module.exports = (app) => {
         assert(commodity);
         const trade = yield app.model.Trade.create({
           order_id: order.id,
-          type: 'ALIPAY',
         });
 
         const data = Object.assign({
