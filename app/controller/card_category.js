@@ -216,11 +216,11 @@ module.exports = (app) => {
 
       // 查询并删除贺卡分类
       const { id } = ctx.params;
-      const cardCategory = await service.cardCategory.getByIdOrThrow(id);
+      await service.cardCategory.getByIdOrThrow(id);
 
       // 验证分类是否存在关联贺卡
       await service.cardCategory.isEmpty(id);
-      await service.cardCategory.delete(id);
+      const cardCategory = await service.cardCategory.delete(id);
 
       ctx.jsonBody = cardCategory;
     }
