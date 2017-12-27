@@ -1,12 +1,12 @@
+// @ts-nocheck
 const util = require('utility');
 const co = require('co');
 const assert = require('assert');
 const converter = require('xml-js');
 
 const API = {
-  UNIFIEDORDER: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
+  UNIFIEDORDER: 'https://api.mch.weixin.qq.com/pay/unifiedorder', // 统一下单接口地址
 };
-
 
 module.exports = (app) => {
   /**
@@ -24,6 +24,7 @@ module.exports = (app) => {
     constructor(ctx) {
       super(ctx);
       const config = app.config.wechat;
+      const { host } = app.config;
 
       assert(config.appid, '[shubang] appid is required in config.wechat');
       assert(config.mch_id, '[shubang] mch_id is required in config.wechat');
@@ -31,7 +32,7 @@ module.exports = (app) => {
       assert(config.key, '[shubang] key is required in config.wechat');
 
       this.defaults = {
-        notify_url: ctx.helper.pathFor('wechat_notify'),
+        notify_url: host + ctx.helper.pathFor('wechat_notify'),
         appid: config.appid,
         mch_id: config.mch_id,
         trade_type: config.trade_type,
@@ -160,7 +161,7 @@ module.exports = (app) => {
     /**
      * 将UUID转换为32位的trade_no
      *
-     * @param {uuid} uuid uuid
+     * @param {string} uuid uuid
      * @returns {string} trade_no
      * @memberof Wechat
      */
@@ -173,7 +174,7 @@ module.exports = (app) => {
      * 将trade_no转换为uuid
      *
      * @param {string} tn trade_no
-     * @returns {uuid} uuid
+     * @returns {string} uuid
      * @memberof Wechat
      */
     tn2uuid(tn) {
@@ -185,8 +186,8 @@ module.exports = (app) => {
     /**
      * 创建交易订单
      *
-     * @param {uuid} orderId 订单id
-     * @return {Trade} trade
+     * @param {string} orderId 订单id
+     * @return {promise} trade
      * @memberof Wechat
      */
     createTrade(orderId) {
@@ -196,6 +197,7 @@ module.exports = (app) => {
         nonceStr,
         uuid2tn,
       } = this;
+      const sign = this.sign.bind(this);
       const request = this.request.bind(this);
       return co.wrap(function* () {
         const order = yield app.model.Order.findById(orderId);
@@ -204,7 +206,7 @@ module.exports = (app) => {
         ctx.userPermission(order.user_id);
 
         const commodity = yield app.model.Commodity.findById(order.commodity_id);
-        assert(commodity);
+        assert(commodity); 
         const trade = yield app.model.Trade.create({
           order_id: order.id,
         });
@@ -214,13 +216,23 @@ module.exports = (app) => {
         }, defaults, {
           body: commodity.name,
           out_trade_no: uuid2tn(trade.id),
-          total_fee: order.realPrice,
+          total_fee: Math.floor(order.realPrice * 100),
           spbill_create_ip: ctx.ip,
         });
         const resp = yield request(API.UNIFIEDORDER, data);
         ctx.error(resp.data.return_code === 'SUCCESS', resp.data.return_msg, 25003);
 
-        return [trade, resp.data];
+        const payload = {
+          appid: resp.data.appid,
+          partnerid: resp.data.mch_id,
+          prepayid: resp.data.prepay_id,
+          package: 'Sign=WXPay', // 固定值
+          noncestr: nonceStr(),
+          timestamp: Date.now().toString().slice(0, 10),
+        };
+        payload.sign = sign(payload);
+
+        return [trade, payload];
       })();
     }
   }
