@@ -68,7 +68,7 @@ module.exports = (app) => {
     },
     category_id: {
       type: UUID,
-      allowNull: false,
+      allowNull: true,
     },
     union_id: {
       type: STRING(32),
