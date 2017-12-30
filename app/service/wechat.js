@@ -4,10 +4,6 @@ const co = require('co');
 const assert = require('assert');
 const converter = require('xml-js');
 
-const API = {
-  UNIFIEDORDER: 'https://api.mch.weixin.qq.com/pay/unifiedorder', // 统一下单接口地址
-};
-
 module.exports = (app) => {
   /**
    * Wechat 支付 Service
@@ -26,10 +22,10 @@ module.exports = (app) => {
       const config = app.config.wechat;
       const { host } = app.config;
 
-      assert(config.appid, '[shubang] appid is required in config.wechat');
-      assert(config.mch_id, '[shubang] mch_id is required in config.wechat');
-      assert(config.trade_type, '[shubang] trade_type is required in config.wechat');
-      assert(config.key, '[shubang] key is required in config.wechat');
+      assert(config.appid, '[huayan] appid is required in config.wechat');
+      assert(config.mch_id, '[huayan] mch_id is required in config.wechat');
+      assert(config.trade_type, '[huayan] trade_type is required in config.wechat');
+      assert(config.key, '[huayan] key is required in config.wechat');
 
       this.defaults = {
         notify_url: host + ctx.helper.pathFor('wechat_notify'),
@@ -39,6 +35,7 @@ module.exports = (app) => {
       };
 
       this.key = config.key;
+      this.config = app.config.wechat;
     }
 
     /**
@@ -201,12 +198,12 @@ module.exports = (app) => {
       const request = this.request.bind(this);
       return co.wrap(function* () {
         const order = yield app.model.Order.findById(orderId);
-        ctx.error(order, '订单不存在', 25001);
+        ctx.error(order, '订单不存在', 20001);
         ctx.error(order.status === app.model.Order.STATUS.CREATED, '订单状态有误，不能发起支付', 25002);
         ctx.userPermission(order.user_id);
 
         const commodity = yield app.model.Commodity.findById(order.commodity_id);
-        assert(commodity); 
+        assert(commodity);
         const trade = yield app.model.Trade.create({
           order_id: order.id,
         });
@@ -218,22 +215,46 @@ module.exports = (app) => {
           out_trade_no: uuid2tn(trade.id),
           total_fee: Math.floor(order.realPrice * 100),
           spbill_create_ip: ctx.ip,
+          attach: '支付测试',
+          openid: order.open_id,
         });
-        const resp = yield request(API.UNIFIEDORDER, data);
+        const resp = yield request(this.config.unifiedorder_url, data);
         ctx.error(resp.data.return_code === 'SUCCESS', resp.data.return_msg, 25003);
 
         const payload = {
-          appid: resp.data.appid,
-          partnerid: resp.data.mch_id,
-          prepayid: resp.data.prepay_id,
-          package: 'Sign=WXPay', // 固定值
-          noncestr: nonceStr(),
-          timestamp: Date.now().toString().slice(0, 10),
+          appId: resp.data.appid,
+          package: `prepay_id=${resp.data.prepay_id}`,
+          nonceStr: nonceStr(),
+          timeStamp: Date.now().toString().slice(0, 10),
+          signType: 'MD5',
         };
-        payload.sign = sign(payload);
+        payload.paySign = sign(payload); // 再次签名
 
         return [trade, payload];
       })();
+    }
+
+    /**
+     * 获取openid及session_key
+     *
+     * @returns {object} openid
+     * @param {any} code -用户登录后返回的token
+     * @memberof Wechat
+     */
+    openid(code) {
+      const { ctx, config } = this;
+      assert(typeof code === 'string', 'code需为字符串');
+
+      return ctx.curl(`${config.openid_url}`, {
+        method: 'GET',
+        data: {
+          appid: config.appid,
+          secret: config.secret,
+          js_code: code,
+          grant_type: config.grant_type,
+        },
+        dataType: 'json', // 以JSON格式处理返回的响应body
+      });
     }
   }
 

@@ -81,6 +81,8 @@ info:
     - 17000 - 17999: Card 相关错误
     - 18000 - 18999: Printer 相关错误
     - 19000 - 19999: Card category 相关错误
+    - 20000 - 20999: Order 相关错误
+    - 21000 - 21999: Trade 相关错误    
 
 
     | 状态码  | 含义          | 说明             |
@@ -128,6 +130,8 @@ info:
     | 19002 | card category error       | 贺卡背景音乐重复/丢失或包含非音频类型文件 |
     | 19003 | card category error       | 贺卡分类已经存在 |
     | 19004 | card category error       | 贺卡分类中存在关联贺卡 |
+    | 20001 | order error       | 订单不存在 |        
+    | 21001 | trade error       | openid获取失败 |    
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

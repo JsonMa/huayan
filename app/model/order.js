@@ -5,6 +5,7 @@ module.exports = (app) => {
     ENUM,
     INTEGER,
     FLOAT,
+    STRING,
   } = app.Sequelize;
 
   /**
@@ -34,7 +35,11 @@ module.exports = (app) => {
       autoIncrement: true,
     },
     user_id: {
-      type: INTEGER,
+      type: UUID,
+      allowNull: false,
+    },
+    open_id: {
+      type: STRING(64),
       allowNull: false,
     },
     commodity_id: {

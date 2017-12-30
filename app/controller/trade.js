@@ -20,9 +20,17 @@ module.exports = (app) => {
     get createRule() {
       return {
         properties: {
-          order_id: this.ctx.helper.rule.uuid,
+          code: {
+            type: 'string',
+            maxLength: 40,
+            minLength: 1,
+          },
+          commodity_id: this.ctx.helper.rule.uuid,
+          count: {
+            type: 'number',
+          },
         },
-        required: ['order_id'],
+        required: ['code', 'commodity_id', 'count'],
         $async: true,
         additionalProperties: false,
       };
@@ -35,16 +43,31 @@ module.exports = (app) => {
      * @return {promise} Trade
      */
     async create() {
-      const param = await this.ctx.validate(this.createRule);
+      const { ctx, service, createRule } = this;
+      const { code, commodity_id: commodityId, count } = await ctx.validate(createRule);
 
-      const order = await this.app.model.Order.findById(param.order_id);
-      this.ctx.error(order, '订单不存在', 25001);
-      this.ctx.error(order.status === app.model.Order.STATUS.CREATED, '订单状态有误，不能发起支付', 25002);
-      this.ctx.userPermission(order.user_id);
+      // 获取openid
+      const resp = await service.wechat.openid(code);
+      ctx.error(resp.data.openid, 'openid获取失败', 21001);
 
-      const [trade, payload] = await this.service.wechat.createTrade(param.order_id);
+      // 生成order
+      const commodity = await app.model.Commodity.findById(commodityId);
+      ctx.error(commodity, '商品不存在', 18001);
+      ctx.error(commodity.status === app.model.Commodity.STATUS.ON, '商品已下架', 18006);
 
-      this.ctx.jsonBody = {
+      /* istanbul ignore next */
+      const order = await app.model.Order.create({
+        user_id: ctx.state.auth.user.id,
+        commodity_price: commodity.realPrice * count,
+        commodity_id: commodityId,
+        count,
+        open_id: resp.data.openid,
+      });
+
+      // 生成trade
+      const [trade, payload] = await service.wechat.createTrade(order.id);
+
+      ctx.jsonBody = {
         trade,
         payload,
       };
@@ -99,12 +122,13 @@ module.exports = (app) => {
       } = this.service.wechat;
 
       /* istanbul ignore if */
-      if (!this.service.wechat.verify(body)) {
-        this.ctx.body = object2Xml({ return_code: FAILURE });
-      }
+      // if (!this.service.wechat.verify(body)) {
+      //   this.ctx.body = object2Xml({ return_code: FAILURE });
+      // }
 
       await this.service.trade.finishTrade(
-        tn2uuid(body.out_trade_no),
+        'a889dc80-ec77-11e7-adbd-9ddef5e4147d',
+        // tn2uuid(body.out_trade_no),
         /* istanbul ignore next */
         body.return_code.toUpperCase() === SUCCESS ? Trade.STATUS.SUCCESS : Trade.STATUS.CLOSED,
       );

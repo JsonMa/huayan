@@ -59,7 +59,6 @@ module.exports = (app) => {
     },
   });
 
-
   Trade.STATUS = {
     PENDING: 'PENDING',
     CLOSED: 'CLOSED',

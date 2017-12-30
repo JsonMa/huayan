@@ -27,6 +27,7 @@ module.exports = (app) => {
    * @property {enum}    status         - 上/下架状态['ON', 'OFF']
    * @property {uuid}    category_id    - 分类ID
    * @property {array}   picture_ids    - 商品图片ID
+   * @property {int}     quata          - 二维码额度
    */
   const Commodity = app.model.define('commodity', {
     id: {
@@ -78,6 +79,10 @@ module.exports = (app) => {
       type: ARRAY(UUID),
       allowNull: false,
       defaultValue: [],
+    },
+    quata: {
+      type: INTEGER,
+      allowNull: true,
     },
   }, {
     getterMethods: {
