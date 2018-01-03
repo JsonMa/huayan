@@ -1,4 +1,6 @@
 const fs = require('fs');
+const gm = require('gm');
+const path = require('path');
 
 module.exports = (app) => {
   /**
@@ -76,7 +78,7 @@ module.exports = (app) => {
      * 获取文件
      *
      * @memberof fileController
-     * @returns {object} 文件详情
+     * @returns {promise} 文件详情
      */
     async show() {
       const { ctx, service, showRule } = this;
@@ -87,6 +89,42 @@ module.exports = (app) => {
       ctx.type = file.type;
       ctx.attachment(file.name);
       ctx.set('Cache-Control', 'max-age=8640000');
+    }
+
+    /**
+     * 获取图片缩略图
+     *
+     * @memberof fileController
+     * @returns {promise} 缩略图
+     */
+    async thumbnail() {
+      const { ctx, service, showRule } = this;
+      await ctx.validate(showRule);
+      const file = await service.file.getByIdOrThrow(ctx.params.id);
+
+      const imgPath = path.join(app.config.baseDir, '/files/head_12.png');
+      const writeStream = fs.createWriteStream(path.join(app.config.baseDir, '/files/stream.png'));
+
+      gm(imgPath).resize(100, 100).write(path.join(app.config.baseDir, '/files/stream.png'), (err) => {
+        if (err) app.logger.error(err);
+        app.logger.info('done');
+      });
+      // ctx.type = file.type;
+      // ctx.attachment(file.name);
+      // ctx.set('Cache-Control', 'max-age=8640000');
+      // gm1('public/images/chat/abc.jpg')
+      // .resize(240, 240,'!')
+      // .toBuffer(function(err,data){
+      //     if(!err)
+      //     {
+      //         res.set('Content-Type','image/png');
+      //         res.send(data);
+      //     }
+      //     else
+      //     {
+      //         console.log(err);
+      //     }}
+      // )
     }
 
     /**
