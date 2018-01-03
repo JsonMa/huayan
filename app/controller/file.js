@@ -1,6 +1,5 @@
 const fs = require('fs');
 const gm = require('gm');
-const path = require('path');
 
 module.exports = (app) => {
   /**
@@ -102,29 +101,19 @@ module.exports = (app) => {
       await ctx.validate(showRule);
       const file = await service.file.getByIdOrThrow(ctx.params.id);
 
-      const imgPath = path.join(app.config.baseDir, '/files/head_12.png');
-      const writeStream = fs.createWriteStream(path.join(app.config.baseDir, '/files/stream.png'));
-
-      gm(imgPath).resize(100, 100).write(path.join(app.config.baseDir, '/files/stream.png'), (err) => {
-        if (err) app.logger.error(err);
-        app.logger.info('done');
-      });
-      // ctx.type = file.type;
-      // ctx.attachment(file.name);
-      // ctx.set('Cache-Control', 'max-age=8640000');
-      // gm1('public/images/chat/abc.jpg')
-      // .resize(240, 240,'!')
-      // .toBuffer(function(err,data){
-      //     if(!err)
-      //     {
-      //         res.set('Content-Type','image/png');
-      //         res.send(data);
-      //     }
-      //     else
-      //     {
-      //         console.log(err);
-      //     }}
-      // )
+      ctx.error(!!~file.type.indexOf('image'), '非图片类型文件，不存在缩略图', 16003); // eslint-disable-line
+      gm(fs.createReadStream(file.path))
+        .resize(240, 60)
+        .stream((err, data) => {
+          if (err) {
+            throw err;
+          } else {
+            ctx.body = data;
+            ctx.type = file.type;
+            ctx.attachment(file.name);
+            ctx.set('Cache-Control', 'max-age=8640000');
+          }
+        });
     }
 
     /**

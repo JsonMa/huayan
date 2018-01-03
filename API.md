@@ -115,6 +115,7 @@ info:
     | 16000 | file error          | 文件丢失                      |
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
+    | 16003 | file error          | 非图片类型文件，不存在缩略图    |
     | 17001 | card error          | 贺卡不存在                    |    
     | 17002 | card error          | 贺卡已经被编辑过，不能再次编辑   |
     | 17003 | card error          | 录音文件非音频类型              |
