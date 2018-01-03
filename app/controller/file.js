@@ -105,9 +105,8 @@ module.exports = (app) => {
       gm(fs.createReadStream(file.path))
         .resize(240, 60)
         .stream((err, data) => {
-          if (err) {
-            throw err;
-          } else {
+          if (err) throw err;
+          else {
             ctx.body = data;
             ctx.type = file.type;
             ctx.attachment(file.name);

@@ -195,6 +195,18 @@ module.exports = (app) => {
       const user = await service.user.getByIdOrThrow(id);
       delete user.dataValues.password;
 
+      const cards = await app.model.Card.findAndCountAll({
+        where: {
+          user_id: user.id,
+        },
+      });
+      user.dataValues.cards = cards.count;
+      let totalClick = 0;
+      cards.rows.forEach((card) => {
+        totalClick += card.click;
+      });
+      user.dataValues.click_total = totalClick;
+
       ctx.jsonBody = user;
     }
 
