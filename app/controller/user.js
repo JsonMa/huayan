@@ -134,7 +134,7 @@ module.exports = (app) => {
      * 获取用户列表
      *
      * @memberof UserController
-     * @returns {array} 用户列表
+     * @returns {promise} 用户列表
      */
     async index() {
       const { ctx, indexRule } = this;
@@ -157,7 +157,7 @@ module.exports = (app) => {
      * 创建用户
      *
      * @memberof UserController
-     * @returns {object} 新建的用户
+     * @returns {promise} 新建的用户
      */
     async create() {
       const { ctx, service, createRule } = this;
@@ -186,7 +186,7 @@ module.exports = (app) => {
      * 获取用户详情
      *
      * @memberof UserController
-     * @returns {object} 用户详情
+     * @returns {promise} 用户详情
      */
     async show() {
       const { ctx, service, showRule } = this;
@@ -214,7 +214,7 @@ module.exports = (app) => {
      * 修改用户
      *
      * @memberof CommodityController
-     * @returns {object} 被修改商品
+     * @returns {promise} 被修改商品
      */
     async update() {
       const { ctx, service, updateRule } = this;
@@ -243,7 +243,7 @@ module.exports = (app) => {
       if (pictureIds) {
         ctx.error(pictureIds.length <= 5 && pictureIds.length >= 1, '用户图片数量需在1~5张范围内', 15001);
         const files = await service.file.count(pictureIds, 'image');
-        ctx.error(files.count === pictureIds.length, '商品图片重复/丢失或包含非图片类型文件', 15002);
+        ctx.error(files.count === pictureIds.length, '用户图片重复/丢失或包含非图片类型文件', 15002);
       }
 
       // 验证头像是否存在
