@@ -49,7 +49,7 @@ module.exports = (app) => {
      * 上传文件
      *
      * @memberof fileController
-     * @returns {object} 上传的文件
+     * @returns {promise} 上传的文件
      */
     async upload() {
       const { ctx, uploadRule } = this;
@@ -103,7 +103,7 @@ module.exports = (app) => {
 
       ctx.error(!!~file.type.indexOf('image'), '非图片类型文件，不存在缩略图', 16003); // eslint-disable-line
       gm(fs.createReadStream(file.path))
-        .resize(240, 60)
+        .resize(160, 60)
         .stream((err, data) => {
           if (err) throw err;
           else {
@@ -118,7 +118,7 @@ module.exports = (app) => {
     /**
      * 删除文件
      *
-     * @returns {object} 被删除的文件
+     * @returns {promise} 被删除的文件
      * @memberof fileController
      */
     async delete() {
