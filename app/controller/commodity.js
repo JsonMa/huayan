@@ -148,6 +148,9 @@ module.exports = (app) => {
           price: {
             type: 'number',
           },
+          quata: {
+            type: 'number',
+          },
           act_price: {
             oneOf: [
               { type: 'null' },
@@ -439,7 +442,7 @@ module.exports = (app) => {
      * 修改商品
      *
      * @memberof CommodityController
-     * @returns {object} 被修改商品
+     * @returns {promise} 被修改商品
      */
     async update() {
       const { ctx, service, updateRule } = this;
@@ -450,6 +453,7 @@ module.exports = (app) => {
         picture_ids: pictureIds,
         category_id: categoryId,
         price,
+        quata,
         act_price: actPrice,
       } = ctx.request.body;
       const commodity = await service.commodity.getByIdOrThrow(ctx.params.id);
@@ -471,6 +475,8 @@ module.exports = (app) => {
       if (price) ctx.request.body.price = _.floor(price, 2);
       /* istanbul ignore next */
       if (actPrice) ctx.request.body.act_price = _.floor(actPrice, 2); // eslint-disable-line
+      /* istanbul ignore next */
+      if (quata) ctx.request.body.quata = parseInt(quata, 10);
 
       // 商品更新
       Object.assign(commodity, ctx.request.body);
