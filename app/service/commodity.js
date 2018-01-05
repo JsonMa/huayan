@@ -72,22 +72,24 @@ module.exports = (app) => {
     /**
      * 创建商品
      *
-     * @param {string}  pdName          -商品名称
-     * @param {string}  des             -商品描述
-     * @param {int}     pdPrice         -商品价格
-     * @param {int}     actPrice        -商品活动价格
-     * @param {boolean} pdRecommended   -是否推荐
-     * @param {uuid}    categoryId      -所属类别ID
-     * @param {array}   pictureIds      -图片
+     * @param {string}   pdName          - 商品名称
+     * @param {string}   des             - 商品描述
+     * @param {number}   pdPrice         - 商品价格
+     * @param {number}   actPrice        - 商品活动价格
+     * @param {boolean}  pdRecommended   - 是否推荐
+     * @param {string}   categoryId      - 所属类别ID
+     * @param {array}    pictureIds      - 图片
+     * @param {number}   quata           - 二维码额度
      * @memberof Commodity
      * @returns {promise} 返回创建的商品
      */
-    create(pdName, des, pdPrice, actPrice, pdRecommended, categoryId, pictureIds) {
+    create(pdName, des, pdPrice, actPrice, pdRecommended, categoryId, pictureIds, quata) {
       const { assert, uuidValidate } = this.ctx.helper;
 
       assert(typeof pdName === 'string', 'pdName需为字符串');
       assert(typeof des === 'string', 'des需为字符串');
       assert(typeof pdPrice === 'number', 'pdPrice需为数字');
+      if (quata) assert(typeof quata === 'number', 'quata需为数字');
       if (actPrice) assert(typeof actPrice === 'number', 'actPrice需为数字');
       assert(uuidValidate(categoryId), 'categoryId需为uuid格式');
       /* istanbul ignore next */
@@ -108,6 +110,7 @@ module.exports = (app) => {
         recommended: pdRecommended,
         category_id: categoryId,
         picture_ids: pictureIds,
+        quata,
       };
 
       return this.app.model.Commodity.create(commodity);

@@ -83,6 +83,9 @@ module.exports = (app) => {
           price: {
             type: 'number',
           },
+          quata: {
+            type: 'number',
+          },
           act_price: {
             type: 'number',
           },
@@ -381,6 +384,7 @@ module.exports = (app) => {
         description,
         recommended,
         attr,
+        quata,
       } = ctx.request.body;
 
       let {
@@ -411,6 +415,7 @@ module.exports = (app) => {
         recommended,
         categoryId,
         pictureIds,
+        quata,
       );
 
       // 为指定商品添加属性
