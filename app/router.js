@@ -71,7 +71,6 @@ module.exports = (app) => {
   app.post(`${prefix}/ylink/print`, 'ylink.print');
 
   // order 订单
-  app.post(`${prefix}/orders`, 'order.create');
   app.get(`${prefix}/orders`, 'order.list');
   app.get(`${prefix}/orders/:id`, 'order.fetch');
   app.patch(`${prefix}/orders/:id`, 'order.patch');

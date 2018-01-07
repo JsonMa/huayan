@@ -18,8 +18,11 @@ module.exports = (app) => {
       return {
         properties: {
           commodity_id: this.ctx.helper.rule.uuid,
+          count: {
+            type: 'number',
+          },
         },
-        required: ['commodity_id'],
+        required: ['commodity_id', 'count'],
         $async: true,
         additionalProperties: false,
       };
