@@ -13,28 +13,28 @@ module.exports = (app) => {
   app.get(`${prefix}/users`, 'user.index');
   app.get(`${prefix}/users/:id`, 'user.show');
   app.post(`${prefix}/users`, 'user.create');
-  app.patch(`${prefix}/users/:id`, 'user.update');
+  app.put(`${prefix}/users/:id`, 'user.update');
 
   // card
   app.get(`${prefix}/cards`, 'card.index');
   app.get(`${prefix}/cards/:id`, 'card.show');
   app.post(`${prefix}/cards`, 'card.create');
-  app.patch(`${prefix}/cards/:id`, 'card.update');
+  app.put(`${prefix}/cards/:id`, 'card.update');
   app.delete(`${prefix}/cards/:id`, 'card.destroy');
 
   // card category
   app.get(`${prefix}/card_categories`, 'cardCategory.index');
   app.post(`${prefix}/card_categories`, 'cardCategory.create');
   app.delete(`${prefix}/card_categories/:id`, 'cardCategory.destroy');
-  app.patch(`${prefix}/card_categories/:id`, 'cardCategory.update');
+  app.put(`${prefix}/card_categories/:id`, 'cardCategory.update');
 
   // commodity
   app.get(`${prefix}/commodities`, 'commodity.index');
   app.get(`${prefix}/commodities/:id`, 'commodity.show');
   app.post(`${prefix}/commodities`, 'commodity.create');
   app.delete(`${prefix}/commodities`, 'commodity.batchDestroy');
-  app.patch(`${prefix}/commodities`, 'commodity.batchUpdate');
-  app.patch(`${prefix}/commodities/:id`, 'commodity.update');
+  app.put(`${prefix}/commodities`, 'commodity.batchUpdate');
+  app.put(`${prefix}/commodities/:id`, 'commodity.update');
   app.post(`${prefix}/commodities/:id/attributes`, 'commodity.createAttribute');
   app.get(`${prefix}/commodities/:id/attributes`, 'commodity.attributeIndex');
   app.get(`${prefix}/commodities/:id/attributes/:attr_id`, 'commodity.attributeShow');
@@ -45,7 +45,7 @@ module.exports = (app) => {
   app.get(`${prefix}/commodity_categories`, 'commodityCategory.index');
   app.post(`${prefix}/commodity_categories`, 'commodityCategory.create');
   app.delete(`${prefix}/commodity_categories`, 'commodityCategory.batchDestroy');
-  app.patch(`${prefix}/commodity_categories/:id`, 'commodityCategory.update');
+  app.put(`${prefix}/commodity_categories/:id`, 'commodityCategory.update');
 
   // file
   app.get(`${prefix}/files/:id`, 'file.show');
@@ -56,7 +56,7 @@ module.exports = (app) => {
   // banner
   app.get(`${prefix}/banners`, 'banner.index');
   app.post(`${prefix}/banners`, 'banner.create');
-  app.patch(`${prefix}/banners/:id`, 'banner.update');
+  app.put(`${prefix}/banners/:id`, 'banner.update');
   app.delete(`${prefix}/banners/:id`, 'banner.destroy');
 
   // error
@@ -73,7 +73,7 @@ module.exports = (app) => {
   // order 订单
   app.get(`${prefix}/orders`, 'order.list');
   app.get(`${prefix}/orders/:id`, 'order.fetch');
-  app.patch(`${prefix}/orders/:id`, 'order.patch');
+  app.put(`${prefix}/orders/:id`, 'order.patch');
 
   // trade 交易
   app.post(`${prefix}/trades`, 'trade.create');
