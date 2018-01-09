@@ -112,7 +112,7 @@ module.exports = (app) => {
             minLength: 6,
           },
           avatar_id: this.ctx.helper.rule.uuid,
-          url: this.ctx.helper.rule.url,
+          url: this.ctx.helper.rule.uuid,
           status: {
             type: 'string',
             enum: [

@@ -21,7 +21,7 @@ module.exports = (app) => {
      * @property {string}  phone          - 联系人
      * @property {uuid}    avatar_id      - 商家logo id
      * @property {array}   picture_ids    - 产品图ids
-     * @property {string}  url            - 公众号url地址
+     * @property {string}  url            - 公众号二维码 id
      * @property {enum}    status         - 商家状态['ON', 'OFF']
      * @property {enum}    role           - 用户角色[1,2]分别代表系统管理员、商家
      * @property {string}  password       - 密码,md5加密后的值
