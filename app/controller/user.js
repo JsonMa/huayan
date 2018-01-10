@@ -30,6 +30,13 @@ module.exports = (app) => {
               'OFF',
             ],
           },
+          cooperation: {
+            type: 'string',
+            enum: [
+              'TRUE',
+              'FALSE',
+            ],
+          },
           ...this.ctx.helper.rule.pagination,
         },
         $async: true,
@@ -96,9 +103,6 @@ module.exports = (app) => {
             maxLength: 20,
             minLength: 1,
           },
-          jump_num: {
-            type: 'number',
-          },
           address: {
             type: 'string',
             maxLength: 30,
@@ -118,6 +122,13 @@ module.exports = (app) => {
             enum: [
               'ON',
               'OFF',
+            ],
+          },
+          cooperation: {
+            type: 'string',
+            enum: [
+              'TRUE',
+              'FALSE',
             ],
           },
           picture_ids: {
@@ -140,11 +151,11 @@ module.exports = (app) => {
       const { ctx, indexRule } = this;
       const { user } = ctx.service;
       const {
-        name, phone, status, sort, start, count,
+        name, phone, status, cooperation, sort, start, count,
       } = await ctx.validate(indexRule, ctx.helper.preprocessor.pagination);
 
       // 获取用户
-      const users = await user.fetch(name, phone, status, start, count, sort); // eslint-disable-line
+      const users = await user.fetch(name, phone, status, cooperation, start, count, sort); // eslint-disable-line
 
       ctx.jsonBody = Object.assign({
         start,
@@ -214,7 +225,7 @@ module.exports = (app) => {
      * 修改用户
      *
      * @memberof CommodityController
-     * @returns {promise} 被修改商品
+     * @returns {promise} 被修改用户信息
      */
     async update() {
       const { ctx, service, updateRule } = this;
@@ -224,19 +235,12 @@ module.exports = (app) => {
         password,
         avatar_id: avatarId,
         picture_ids: pictureIds,
-        jump_num: jumpNum,
       } = ctx.request.body;
       const { id } = ctx.params;
 
       // 当前用户只能修改自己信息
       ctx.userPermission(id);
       const user = await service.user.getByIdOrThrow(id);
-
-      // 修改公众号跳转数量
-      if (jumpNum) {
-        ctx.error(Math.floor(jumpNum) >= user.jump_num, '不能减少公众号跳转数', 10005);
-        user.jump_num = jumpNum;
-      }
 
       // 验证图片是否存在
       /* istanbul ignore else */
@@ -263,6 +267,24 @@ module.exports = (app) => {
 
       // 修改用户
       Object.assign(user, ctx.request.body);
+      await user.save();
+
+      ctx.jsonBody = user;
+    }
+
+    /**
+     * 修改二维码下载量
+     *
+     * @memberof UserController
+     * @returns {promise} 被修改的用户
+     */
+    async updateQr() {
+      const { ctx, service, showRule } = this;
+      await ctx.validate(showRule);
+      const { id } = ctx.params;
+      const user = await service.user.getByIdOrThrow(id);
+
+      user.jump_num += 1;
       await user.save();
 
       ctx.jsonBody = user;

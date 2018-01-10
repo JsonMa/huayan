@@ -14,6 +14,7 @@ module.exports = (app) => {
   app.get(`${prefix}/users/:id`, 'user.show');
   app.post(`${prefix}/users`, 'user.create');
   app.put(`${prefix}/users/:id`, 'user.update');
+  app.put(`${prefix}/users/:id/qr`, 'user.updateQr');
 
   // card
   app.get(`${prefix}/cards`, 'card.index');

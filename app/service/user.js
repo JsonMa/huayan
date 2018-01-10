@@ -13,9 +13,9 @@ class UserService extends Service {
   /**
    * 根据ids查找用户
    *
-   * @param {[UUID]} ids 用户id数组
+   * @param {array} ids 用户id数组
    * @memberof UserService
-   * @returns {[User]} 用户数组
+   * @returns {object} 用户数组
    */
   findByIds(ids) {
     const { assert } = this.ctx.helper;
@@ -37,13 +37,14 @@ class UserService extends Service {
      * @param {string}  name        -用户名
      * @param {string}  phone       -用户手机
      * @param {string}  status      -用户状态
+     * @param {string}  cooperation -是否为合作伙伴
      * @param {string}  start       -从第几条数据开始
      * @param {string}  count       -数据条数
      * @param {string}  sort        -是否排序
      * @memberof UserService
      * @returns {promise} 返回用户列表
      */
-  fetch(name, phone, status, start, count, sort) {
+  fetch(name, phone, status, cooperation, start, count, sort) {
     const { assert } = this.ctx.helper;
 
     /* istanbul ignore else */
@@ -52,6 +53,8 @@ class UserService extends Service {
     if (phone) assert(typeof phone === 'string', 'phone需为字符串');
     /* istanbul ignore next */
     if (status) assert(status === 'ON' || status === 'OFF', 'status需为ON或OFF');
+    /* istanbul ignore next */
+    if (status) assert(cooperation === 'TRUE' || status === 'FALSE', 'cooperation需为TRUE或FALSE');
 
     assert(typeof start === 'number', 'start需为字符串');
     assert(typeof count === 'number', 'count需为字符串');
@@ -63,6 +66,8 @@ class UserService extends Service {
     const timeOrder = sort === 'true' ? ['updated_at', 'DESC'] : ['updated_at', 'ASC'];
     /* istanbul ignore next */
     const statusQuery = status === undefined ? { } : { status };
+    /* istanbul ignore next */
+    const cooperationQuery = cooperation === undefined ? { } : { cooperation };
     /* istanbul ignore next */
     const nameQuery = name === undefined ? { } : {
       name: {
@@ -81,6 +86,7 @@ class UserService extends Service {
         ...nameQuery,
         ...phoneQuery,
         ...statusQuery,
+        ...cooperationQuery,
       },
       offset: start,
       limit: count,
@@ -88,7 +94,7 @@ class UserService extends Service {
         ['status', 'ASC'],
         timeOrder,
       ],
-      attributes: ['id', 'no', 'name', 'address', 'phone', 'avatar_id', 'picture_ids', 'url', 'status', 'role'],
+      attributes: ['id', 'no', 'name', 'address', 'phone', 'avatar_id', 'picture_ids', 'url', 'status', 'role', 'cooperation'],
     });
   }
 
@@ -97,7 +103,7 @@ class UserService extends Service {
    *
    * @param {string}  name          -用户名称
    * @param {string}  phone         -用户手机
-   * @param {int}     password      -用户密码
+   * @param {string}  password      -用户密码
    * @memberof UserService
    * @returns {promise|null} 返回创建的用户
    */
