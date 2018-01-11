@@ -118,7 +118,7 @@ describe('test/app/controller/commodity.test.js', () => {
     const commodity = initiater._getRandomItem('commodity');
     const commodityCategory = initiater._getRandomItem('commodity_category');
     const resp = await app.httpRequest()
-      .patch(`/commodities/${commodity.id}`)
+      .put(`/commodities/${commodity.id}`)
       .send({
         name: 'MOCK-COMMODITY',
         category_id: commodityCategory.id,
@@ -138,7 +138,7 @@ describe('test/app/controller/commodity.test.js', () => {
     const injectedCommodity = initiater.values.commodity;
 
     const resp = await app.httpRequest()
-      .patch(`/commodities?ids=${injectedCommodity[0].id},${injectedCommodity[1].id}`)
+      .put(`/commodities?ids=${injectedCommodity[0].id},${injectedCommodity[1].id}`)
       .send({
         status: 'OFF',
         recommended: true,

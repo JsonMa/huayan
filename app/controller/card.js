@@ -193,7 +193,7 @@ module.exports = (app) => {
      * 修改贺卡
      *
      * @memberof CardController
-     * @returns {object} 被修改的贺卡
+     * @returns {promise} 被修改的贺卡
      */
     async update() {
       const { ctx, service, updateRule } = this;
@@ -206,10 +206,13 @@ module.exports = (app) => {
         picture_id: pictureId,
         background_id: backgroundId,
         category_id: categoryId,
-        union_id: unionId,
+        union_id: code,
       } = ctx.request.body;
       const card = await service.card.getByIdOrThrow(ctx.params.id);
-      ctx.error(card.status === 'BLANK' || unionId === card.union_id, '贺卡已经被编辑过，不能再次编辑', 17002);
+      const openidResult = await service.wechat.openid(code);
+
+      ctx.error(openidResult.data.openid, 'openid获取失败', 21001);
+      ctx.error(card.status === 'BLANK' || openidResult.data.openid === card.union_id, '贺卡已经被编辑过，不能再次编辑', 17002);
 
       // 验证贺卡分类是否存在
       /* istanbul ignore else */
@@ -247,6 +250,7 @@ module.exports = (app) => {
       }
 
       // 贺卡更新
+      ctx.request.body.union_id = openidResult.data.openid;
       Object.assign(card, ctx.request.body);
       await card.save();
 

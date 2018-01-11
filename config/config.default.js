@@ -42,11 +42,11 @@ module.exports = () => {
   };
 
   exports.wechat = {
-    appid: 'wxcc64d1a03a0f400b',
+    appid: 'wx88168e0c2c6b3bf2',
     mch_id: 10000100,
     trade_type: 'JSAPI',
     key: '192006250b4c09247ec02edce69f6a2d', // 自定义key
-    secret: 'd0442daaf8d37f5503c8e11a3d0f4b5a', //小程序的 app secret
+    secret: '84bb33970341d312339b040b89d49bd8', //小程序的 app secret
     grant_type: 'authorization_code', // token换取openid所需的
     openid_url: 'https://api.weixin.qq.com/sns/jscode2session', // openid获取地址
     unifiedorder_url: 'https://api.mch.weixin.qq.com/pay/unifiedorder', // 统一下单接口地址

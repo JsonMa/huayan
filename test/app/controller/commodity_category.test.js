@@ -78,7 +78,7 @@ describe('test/app/controller/commodity_category.test.js', () => {
     const commodityCategory = initiater._getRandomItem('commodity_category');
 
     const resp = await app.httpRequest()
-      .patch(`/commodity_categories/${commodityCategory.id}`)
+      .put(`/commodity_categories/${commodityCategory.id}`)
       .send({
         name: 'CATEGORY',
         cover_id: initiater.values.file[0].id,

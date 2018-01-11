@@ -60,7 +60,7 @@ describe('test/app/controller/banner.test.js', () => {
 
   it('should update banner successfully', async () => {
     const resp = await app.httpRequest()
-      .patch(`/banners/${initiater.values.banner[0].id}`)
+      .put(`/banners/${initiater.values.banner[0].id}`)
       .send({
         cover_id: initiater.values.file[0].id,
       })

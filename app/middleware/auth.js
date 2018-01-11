@@ -30,7 +30,7 @@ module.exports = option => function* (next) {
   } catch (e) {
     yield this.app.redis.set(`${option.prefix}:${token}`, null);
     this.cookies.set(TOKEN, null);
-    this.error('Session已失效, 请重新登录', 10001);
+    this.error('Session已失效, 请重新登录', 10001, 401);
   }
 
   const user = yield this.app.model.User.findById(session.id);

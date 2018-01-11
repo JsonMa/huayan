@@ -180,19 +180,4 @@ module.exports = {
     const { role } = this.state.auth;
     return role === '1';
   },
-
-  /**
-   * 验证输入是否为JSON字符串
-   *
-   * @param {string} str json string
-   * @return {boolean} 返回验证结果
-   */
-  isJsonString(str) {
-    try {
-      JSON.parse(str);
-      return JSON.parse(str);
-    } catch (err) {
-      return false;
-    }
-  },
 };
