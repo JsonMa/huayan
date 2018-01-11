@@ -5,7 +5,7 @@ module.exports = (app) => {
     STRING,
     INTEGER,
     ENUM,
-    ARRAY,
+    JSONB,
   } = app.Sequelize;
 
   /**
@@ -72,6 +72,11 @@ module.exports = (app) => {
     },
     union_id: {
       type: STRING(32),
+      allowNull: true,
+    },
+    editor_info: {
+      type: JSONB,
+      allowNull: true,
     },
     click: {
       type: INTEGER,

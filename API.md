@@ -72,7 +72,7 @@ info:
     - 200-500: http错误
     - 1000  - 9999 : 系统内部操作错误, 如DB, REDIS
     - 10000 - 10999: Auth 相关错误
-    - 11000 - 11999: Banner 相关错误    
+    - 11000 - 11999: Banner 相关错误
     - 12000 - 12999: Commodity attribute value 相关错误
     - 13000 - 13999: Commodity attribute 相关错误
     - 14000 - 14999: Commodity category 相关错误
@@ -82,7 +82,7 @@ info:
     - 18000 - 18999: Printer 相关错误
     - 19000 - 19999: Card category 相关错误
     - 20000 - 20999: Order 相关错误
-    - 21000 - 21999: Trade 相关错误    
+    - 21000 - 21999: Trade 相关错误
 
 
     | 状态码  | 含义          | 说明             |
@@ -95,13 +95,13 @@ info:
     | 404  | not found   | 接口不存在            |
     | 500  | error       | 服务器错误            |
     | 10001 | auth error          | Session已失效, 请重新登录      |
-    | 10002 | auth error          | 用户名或密码错误               |    
-    | 10003 | user error          | 用户已存在                    |    
+    | 10002 | auth error          | 用户名或密码错误               |
+    | 10003 | user error          | 用户已存在                    |
     | 10004 | user error          | 用户不存在                    |
-    | 10005 | user error          | 不能减少公众号跳转数            |    
+    | 10005 | user error          | 不能减少公众号跳转数            |
     | 11001 | banner error          | 视频封面非图片类型文件        |
     | 11002 | banner error          | 非视频类型文件               |
-    | 11003 | banner error          | banner不存在                |    
+    | 11003 | banner error          | banner不存在                |
     | 13000 | commodity attr error| 商品属性不存在                 |
     | 13001 | commodity attr error| 商品属性已存在                 |
     | 14000 | commodity category error | 商品分类不存在            |
@@ -116,7 +116,7 @@ info:
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
     | 16003 | file error          | 非图片类型文件，不存在缩略图    |
-    | 17001 | card error          | 贺卡不存在                    |    
+    | 17001 | card error          | 贺卡不存在                    |
     | 17002 | card error          | 贺卡已经被编辑过，不能再次编辑   |
     | 17003 | card error          | 录音文件非音频类型              |
     | 17004 | card error          | 贺卡照片数量需在1~5张范围内       |
@@ -125,14 +125,16 @@ info:
     | 17007 | card error          | 录像封面非图片类型              |
     | 17008 | card error          | 贺卡背景非图片类型              |
     | 17009 | card error          | 创建贺卡失败，剩余数量小于1      |
-    | 17010 | card error          | 照片非图片类型文件              |    
+    | 17010 | card error          | 照片非图片类型文件              |
+    | 17011 | card error          | 贺卡用户信息非JSON格式          |
+    | 17012 | card error          | 贺卡用户信息不存在头像或昵称     |
     | 18001 | printer error       | printer权限认证相关错误         |
     | 19001 | card category error       | 贺卡背景图片重复/丢失或包含非图片类型文件 |
     | 19002 | card category error       | 贺卡背景音乐重复/丢失或包含非音频类型文件 |
     | 19003 | card category error       | 贺卡分类已经存在 |
     | 19004 | card category error       | 贺卡分类中存在关联贺卡 |
-    | 20001 | order error       | 订单不存在 |        
-    | 21001 | trade error       | openid获取失败 |    
+    | 20001 | order error       | 订单不存在 |
+    | 21001 | trade error       | openid获取失败 |
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

@@ -74,6 +74,9 @@ module.exports = (app) => {
             maxLength: 36,
             minLength: 1,
           },
+          editor_info: {
+            type: 'string',
+          },
           picture_id: this.ctx.helper.rule.uuid,
           status: {
             type: 'string',
@@ -84,7 +87,7 @@ module.exports = (app) => {
           },
           background_id: this.ctx.helper.rule.uuid,
         },
-        required: ['id', 'union_id'],
+        required: ['id', 'union_id', 'editor_info'],
         $async: true,
         additionalProperties: false,
       };
@@ -195,9 +198,13 @@ module.exports = (app) => {
         background_id: backgroundId,
         category_id: categoryId,
         union_id: unionId,
+        editor_info: editorInfo,
       } = ctx.request.body;
       const card = await service.card.getByIdOrThrow(ctx.params.id);
+      const parsedJson = ctx.isJsonString(editorInfo);
 
+      ctx.error(parsedJson, '贺卡用户信息非JSON格式', 17011);
+      ctx.error(_.has(parsedJson, ['nickName', 'avatarUrl']), '贺卡用户信息不存在头像或昵称', 17012);
       ctx.error(card.status === 'BLANK' || unionId === card.union_id, '贺卡已经被编辑过，不能再次编辑', 17002);
 
       // 验证贺卡分类是否存在
