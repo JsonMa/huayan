@@ -75,7 +75,16 @@ module.exports = (app) => {
             minLength: 1,
           },
           editor_info: {
-            type: 'string',
+            properties: {
+              nick_name: {
+                type: 'string',
+              },
+              avatar_url: {
+                type: 'string',
+              },
+            },
+            required: ['nick_name', 'avatar_url'],
+            additionalProperties: false,
           },
           picture_id: this.ctx.helper.rule.uuid,
           status: {
@@ -114,7 +123,7 @@ module.exports = (app) => {
      * 获取贺卡列表
      *
      * @memberof CardController
-     * @returns {array} 贺卡列表
+     * @returns {promise} 贺卡列表
      */
     async index() {
       const { ctx, indexRule } = this;
@@ -138,7 +147,7 @@ module.exports = (app) => {
      * 获取贺卡详情
      *
      * @memberof CardController
-     * @returns {object} 贺卡详情
+     * @returns {promise} 贺卡详情
      */
     async show() {
       const { ctx, service, showRule } = this;
@@ -161,7 +170,7 @@ module.exports = (app) => {
      * 创建贺卡
      *
      * @memberof CardController
-     * @returns {object} 新建的贺卡
+     * @returns {promise} 新建的贺卡
      */
     async create() {
       const { ctx, service } = this;
@@ -198,13 +207,8 @@ module.exports = (app) => {
         background_id: backgroundId,
         category_id: categoryId,
         union_id: unionId,
-        editor_info: editorInfo,
       } = ctx.request.body;
       const card = await service.card.getByIdOrThrow(ctx.params.id);
-      const parsedJson = ctx.isJsonString(editorInfo);
-
-      ctx.error(parsedJson, '贺卡用户信息非JSON格式', 17011);
-      ctx.error(_.has(parsedJson, ['nickName', 'avatarUrl']), '贺卡用户信息不存在头像或昵称', 17012);
       ctx.error(card.status === 'BLANK' || unionId === card.union_id, '贺卡已经被编辑过，不能再次编辑', 17002);
 
       // 验证贺卡分类是否存在
@@ -253,7 +257,7 @@ module.exports = (app) => {
      * 删除贺卡
      *
      * @memberof CardController
-     * @returns {object} 删除的贺卡
+     * @returns {promise} 删除的贺卡
      */
     async destroy() {
       const { ctx, service, destroyRule } = this;
