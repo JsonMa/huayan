@@ -85,9 +85,9 @@ module.exports = (app) => {
       const file = await service.file.getByIdOrThrow(ctx.params.id);
       const { range: requestRange } = ctx.headers;
       const { size } = fs.statSync(file.path);
-      const fileSize = !!~file.type.indexOf('image') ? size : file.size; // eslint-disable-line
+      const fileSize = !!~file.type.indexOf('video') ? size : file.size; // eslint-disable-line
 
-      if (requestRange) {
+      if (requestRange && ~file.type.indexOf('video')) { // eslint-disable-line
         const range = ctx.helper.video.range(ctx.headers.range, fileSize);
         if (range) {
           const { start, end } = range;
