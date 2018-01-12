@@ -85,9 +85,9 @@ module.exports = (app) => {
       const file = await service.file.getByIdOrThrow(ctx.params.id);
       const { range: requestRange } = ctx.headers;
       const { size } = fs.statSync(file.path);
+      const fileSize = !!~file.type.indexOf('image') ? size : file.size; // eslint-disable-line
 
       if (requestRange) {
-        const fileSize = file.type === 'video/mp4' ? file.size : size;
         const range = ctx.helper.video.range(ctx.headers.range, fileSize);
         if (range) {
           const { start, end } = range;
@@ -104,10 +104,11 @@ module.exports = (app) => {
         } else ctx.status = 416;
       } else {
         ctx.body = fs.createReadStream(file.path);
+        ctx.status = 200;
 
         ctx.set({
           'Content-Type': file.type,
-          'Content-Length': file.type === 'video/mp4' ? file.size : size,
+          'Content-Length': fileSize,
         });
       }
     }
