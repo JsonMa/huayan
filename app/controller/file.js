@@ -102,10 +102,11 @@ module.exports = (app) => {
         } else ctx.status = 416;
       } else {
         ctx.body = fs.createReadStream(file.path);
+        ctx.length = file.size;
 
         ctx.set({
           'Content-Type': file.type,
-          'Content-Length': file.size,
+          // 'Content-Length': file.size,
         });
       }
     }
