@@ -102,11 +102,9 @@ module.exports = (app) => {
         } else ctx.status = 416;
       } else {
         ctx.body = fs.createReadStream(file.path);
-        ctx.length = file.size;
 
         ctx.set({
           'Content-Type': file.type,
-          // 'Cache-Control': 'max-age=8640000',
           // 'Content-Length': file.size,
         });
       }
