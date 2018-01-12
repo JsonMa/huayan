@@ -87,13 +87,14 @@ module.exports = (app) => {
       const { size } = fs.statSync(file.path);
 
       if (requestRange) {
-        const range = ctx.helper.video.range(ctx.headers.range, file.size);
+        const fileSize = file.type === 'video/mp4' ? file.size : size;
+        const range = ctx.helper.video.range(ctx.headers.range, fileSize);
         if (range) {
           const { start, end } = range;
           ctx.set({
-            'Content-Range': `bytes ${start}-${end}/${file.size}`,
+            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
             'Content-Type': file.type,
-            'Content-Length': file.type === 'video/mp4' ? file.size : size,
+            'Content-Length': fileSize,
           });
           ctx.status = 206;
           ctx.body = fs.createReadStream(file.path, {
