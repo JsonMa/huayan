@@ -102,7 +102,6 @@ module.exports = (app) => {
         } else ctx.status = 416;
       } else {
         ctx.body = fs.createReadStream(file.path);
-        ctx.type = file.type;
 
         ctx.set({
           'Content-Type': file.type,
@@ -129,11 +128,9 @@ module.exports = (app) => {
           if (err) throw err;
           else {
             ctx.body = data;
-            ctx.type = file.type;
             ctx.attachment(file.name);
             ctx.set({
               'Content-Type': file.type,
-              'Content-Length': file.size,
               'Cache-Control': 'max-age=8640000',
             });
           }
