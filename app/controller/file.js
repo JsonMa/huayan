@@ -84,6 +84,7 @@ module.exports = (app) => {
       await ctx.validate(showRule);
       const file = await service.file.getByIdOrThrow(ctx.params.id);
       const { range: requestRange } = ctx.headers;
+      const { size } = fs.statSync(file.path);
 
       if (requestRange) {
         const range = ctx.helper.video.range(ctx.headers.range, file.size);
@@ -92,7 +93,7 @@ module.exports = (app) => {
           ctx.set({
             'Content-Range': `bytes ${start}-${end}/${file.size}`,
             'Content-Type': file.type,
-            'Content-Length': file.size,
+            'Content-Length': size,
           });
           ctx.status = 206;
           ctx.body = fs.createReadStream(file.path, {
@@ -105,7 +106,7 @@ module.exports = (app) => {
 
         ctx.set({
           'Content-Type': file.type,
-          // 'Content-Length': file.size,
+          'Content-Length': size,
         });
       }
     }
