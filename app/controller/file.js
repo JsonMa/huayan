@@ -93,7 +93,7 @@ module.exports = (app) => {
           ctx.set({
             'Content-Range': `bytes ${start}-${end}/${file.size}`,
             'Content-Type': file.type,
-            'Content-Length': size,
+            'Content-Length': file.type === 'video/mp4' ? file.size : size,
           });
           ctx.status = 206;
           ctx.body = fs.createReadStream(file.path, {
@@ -106,7 +106,7 @@ module.exports = (app) => {
 
         ctx.set({
           'Content-Type': file.type,
-          'Content-Length': size,
+          'Content-Length': file.type === 'video/mp4' ? file.size : size,
         });
       }
     }
