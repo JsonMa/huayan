@@ -86,8 +86,11 @@ module.exports = (app) => {
 
       ctx.body = fs.createReadStream(file.path);
       ctx.type = file.type;
-      ctx.attachment(file.name);
-      ctx.set('Cache-Control', 'max-age=8640000');
+      // ctx.attachment(file.name);
+      ctx.set({
+        'Content-Type': file.type,
+        'Content-Length': file.size,
+      });
     }
 
     /**
