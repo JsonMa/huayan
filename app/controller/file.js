@@ -83,14 +83,32 @@ module.exports = (app) => {
       const { ctx, service, showRule } = this;
       await ctx.validate(showRule);
       const file = await service.file.getByIdOrThrow(ctx.params.id);
+      const { range: requestRange } = ctx.headers;
 
-      ctx.body = fs.createReadStream(file.path);
-      ctx.type = file.type;
-      // ctx.attachment(file.name);
-      ctx.set({
-        'Content-Type': file.type,
-        'Content-Length': file.size,
-      });
+      if (requestRange) {
+        const range = ctx.helper.video.range(ctx.headers.range, file.size);
+        if (range) {
+          const { start, end } = range;
+          ctx.set({
+            'Content-Range': `bytes ${start}-${end}/${file.size}`,
+            'Content-Type': file.type,
+            'Content-Length': file.size,
+          });
+          ctx.status = 206;
+          ctx.body = fs.createReadStream(file.path, {
+            start,
+            end,
+          });
+        } else ctx.status = 416;
+      } else {
+        ctx.body = fs.createReadStream(file.path);
+        ctx.type = file.type;
+
+        ctx.set({
+          'Content-Type': file.type,
+          'Content-Length': file.size,
+        });
+      }
     }
 
     /**
@@ -113,7 +131,11 @@ module.exports = (app) => {
             ctx.body = data;
             ctx.type = file.type;
             ctx.attachment(file.name);
-            ctx.set('Cache-Control', 'max-age=8640000');
+            ctx.set({
+              'Content-Type': file.type,
+              'Content-Length': file.size,
+              'Cache-Control': 'max-age=8640000',
+            });
           }
         });
     }

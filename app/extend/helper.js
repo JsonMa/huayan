@@ -6,5 +6,6 @@ module.exports = {
   preprocessor: require('./helper/preprocessor'),
   assert: require('assert'),
   printer: require('./helper/printer'),
+  video: require('./helper/video'),
   uuidValidate: uuid => new RegExp(validateRule.uuidRegrex).test(uuid),
 };
