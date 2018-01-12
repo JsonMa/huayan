@@ -26,6 +26,7 @@ module.exports = (app) => {
   // card category
   app.get(`${prefix}/card_categories`, 'cardCategory.index');
   app.post(`${prefix}/card_categories`, 'cardCategory.create');
+  app.get(`${prefix}/card_categories/:id`, 'cardCategory.show');
   app.delete(`${prefix}/card_categories/:id`, 'cardCategory.destroy');
   app.put(`${prefix}/card_categories/:id`, 'cardCategory.update');
 

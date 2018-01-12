@@ -61,6 +61,23 @@ module.exports = (app) => {
     }
 
     /**
+     * 参数规则-贺卡详情
+     *
+     * @readonly
+     * @memberof CardCategoryController
+     */
+    get showRule() {
+      return {
+        properties: {
+          id: this.ctx.helper.rule.uuid,
+        },
+        required: ['id'],
+        $async: true,
+        additionalProperties: false,
+      };
+    }
+
+    /**
      *  参数规则-修改贺卡分类
      *
      * @readonly
@@ -134,6 +151,21 @@ module.exports = (app) => {
         start,
         items: cardCategories.rows,
       };
+    }
+    /**
+     * 获取贺卡分类详情
+     *
+     * @memberof CardCategoryController
+     * @returns {promise} 贺卡详情
+     */
+    async show() {
+      const { ctx, service, showRule } = this;
+      await ctx.validate(showRule);
+
+      const { id } = ctx.params;
+      const category = await service.cardCategory.getByIdOrThrow(id);
+
+      ctx.jsonBody = category;
     }
 
     /**
