@@ -106,8 +106,8 @@ module.exports = (app) => {
 
         ctx.set({
           'Content-Type': file.type,
-          'Cache-Control': 'max-age=8640000',
-          'Content-Length': file.size,
+          // 'Cache-Control': 'max-age=8640000',
+          // 'Content-Length': file.size,
         });
       }
     }
