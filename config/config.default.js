@@ -52,6 +52,11 @@ module.exports = () => {
     unifiedorder_url: 'https://api.mch.weixin.qq.com/pay/unifiedorder', // 统一下单接口地址
   };
 
+  exports.tencent = {
+    SecretId: 'AKIDJj9a1Se5eFrU9fJpZNF7OgzIbvFaw1mX',
+    SecretKey: 'xusqqrtx7Kal1CByXyHPK3ZtDZxKg3Ro'
+  }
+
   exports.redis = {
     client: {
       port: 6379,
