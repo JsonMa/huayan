@@ -83,6 +83,7 @@ info:
     - 19000 - 19999: Card category 相关错误
     - 20000 - 20999: Order 相关错误
     - 21000 - 21999: Trade 相关错误
+    - 22000 - 22999: Tencent API 相关错误
 
 
     | 状态码  | 含义          | 说明             |
@@ -135,6 +136,7 @@ info:
     | 19004 | card category error       | 贺卡分类中存在关联贺卡 |
     | 20001 | order error       | 订单不存在 |
     | 21001 | trade error       | openid获取失败 |
+    | 22001 | tencent api error       | 腾讯API认证失败 |
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

@@ -53,8 +53,8 @@ module.exports = () => {
   };
 
   exports.tencent = {
-    SecretId: 'AKIDJj9a1Se5eFrU9fJpZNF7OgzIbvFaw1mX',
-    SecretKey: 'xusqqrtx7Kal1CByXyHPK3ZtDZxKg3Ro'
+    SecretId: 'AKIDADg3IJmcw4xc6LrEnBNL3VheLlzwv3C4',
+    SecretKey: 'jHadQxGKCwRjkV1LPEsKXVM1RcYJtHTQ'
   }
 
   exports.redis = {

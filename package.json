@@ -8,6 +8,7 @@
     "alipay-mobile": "2.1.1",
     "co": "4.6.0",
     "co-wechat-body": "^0.1.6",
+    "cos-nodejs-sdk-v5": "^2.2.5",
     "egg": "^1.8.0",
     "egg-redis": "1.0.2",
     "egg-scripts": "^1.2.0",
