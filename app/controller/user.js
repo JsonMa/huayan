@@ -104,9 +104,21 @@ module.exports = (app) => {
             minLength: 1,
           },
           address: {
-            type: 'string',
-            maxLength: 30,
-            minLength: 1,
+            properties: {
+              location: {
+                type: 'string',
+                maxLength: 30,
+                minLength: 1,
+              },
+              lon: {
+                type: 'number',
+              },
+              lat: {
+                type: 'number',
+              },
+            },
+            required: ['location', 'lon', 'lat'],
+            additionalProperties: false,
           },
           contact: this.ctx.helper.rule.phone,
           phone: this.ctx.helper.rule.phone,

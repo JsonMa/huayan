@@ -6,6 +6,7 @@ module.exports = (app) => {
     INTEGER,
     ENUM,
     ARRAY,
+    JSONB,
   } = app.Sequelize;
 
     /**
@@ -49,7 +50,7 @@ module.exports = (app) => {
       allowNull: true,
     },
     address: {
-      type: STRING(32),
+      type: JSONB,
       allowNull: true,
     },
     phone: {
