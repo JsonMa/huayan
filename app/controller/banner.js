@@ -36,7 +36,7 @@ module.exports = (app) => {
           cover_id: this.ctx.helper.rule.uuid,
           video_url: {
             type: 'string',
-            maxLength: 60,
+            maxLength: 128,
             minLength: 1,
           },
         },

@@ -43,7 +43,7 @@ module.exports = (app) => {
       allowNull: true,
     },
     video_url: {
-      type: STRING(64),
+      type: STRING(128),
       allowNull: true,
     },
     cover_id: {

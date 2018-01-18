@@ -27,7 +27,7 @@ module.exports = (app) => {
       allowNull: false,
     },
     video_url: {
-      type: STRING(64),
+      type: STRING(128),
       allowNull: false,
     },
     status: {

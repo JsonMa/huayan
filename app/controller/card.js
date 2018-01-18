@@ -63,7 +63,7 @@ module.exports = (app) => {
           voice_id: this.ctx.helper.rule.uuid,
           video_url: {
             type: 'string',
-            maxLength: 60,
+            maxLength: 128,
             minLength: 1,
           },
           cover_id: this.ctx.helper.rule.uuid,
