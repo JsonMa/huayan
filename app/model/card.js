@@ -17,7 +17,7 @@ module.exports = (app) => {
    * @property {uuid}    id
    * @property {number}  no              - 贺卡序列号
    * @property {uuid}    voice_id        - 贺卡录音id
-   * @property {uuid}    video_id        - 贺卡视频id
+   * @property {uuid}    video_url       - 贺卡视频url
    * @property {uuid}    cover_id        - 贺卡视频封面id
    * @property {uuid}    blessing        - 祝福语
    * @property {uuid}    background_id   - 背景图 id
@@ -42,8 +42,8 @@ module.exports = (app) => {
       type: UUID,
       allowNull: true,
     },
-    video_id: {
-      type: UUID,
+    video_url: {
+      type: STRING(64),
       allowNull: true,
     },
     cover_id: {

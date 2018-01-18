@@ -7,5 +7,6 @@ module.exports = {
   assert: require('assert'),
   printer: require('./helper/printer'),
   video: require('./helper/video'),
+  vodUploadApi: require('./helper/VodUploadApi'),
   uuidValidate: uuid => new RegExp(validateRule.uuidRegrex).test(uuid),
 };

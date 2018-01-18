@@ -61,7 +61,11 @@ module.exports = (app) => {
         properties: {
           id: this.ctx.helper.rule.uuid,
           voice_id: this.ctx.helper.rule.uuid,
-          video_id: this.ctx.helper.rule.uuid,
+          video_url: {
+            type: 'string',
+            maxLength: 60,
+            minLength: 1,
+          },
           cover_id: this.ctx.helper.rule.uuid,
           category_id: this.ctx.helper.rule.uuid,
           blessing: {
@@ -201,7 +205,7 @@ module.exports = (app) => {
 
       const {
         voice_id: voiceId,
-        video_id: videoId,
+        video_url: videoUrl,
         cover_id: coverId,
         picture_id: pictureId,
         background_id: backgroundId,
@@ -232,10 +236,7 @@ module.exports = (app) => {
       }
 
       /* istanbul ignore else */
-      if (videoId) {
-        const file = await service.file.getByIdOrThrow(videoId);
-        ctx.error(!!~file.type.indexOf('video/'), '录像文件非视频类型', 17006, 400); // eslint-disable-line
-      }
+      if (videoUrl) ctx.error(!!~videoUrl.indexOf('.mp4'), '录像文件地址无效', 17006, 400); // eslint-disable-line
 
       /* istanbul ignore else */
       if (coverId) {
@@ -274,14 +275,11 @@ module.exports = (app) => {
       await service.card.getByIdOrThrow(id);
       const deletedCard = await service.card.delete(id);
       const {
-        video_id: videoId,
         voice_id: voiceId,
         cover_id: coverId,
         picture_id: pictureId,
       } = deletedCard;
 
-      /* istanbul ignore next */
-      if (videoId) await service.file.delete(videoId);
       /* istanbul ignore next */
       if (voiceId) await service.file.delete(voiceId);
       /* istanbul ignore next */

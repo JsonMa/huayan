@@ -43,7 +43,7 @@ describe('test/app/controller/banner.test.js', () => {
         .post('/banners')
         .send({
           cover_id: initiater.values.file[0].id,
-          video_id: initiater.values.file[1].id,
+          video_url: 'http://1255680877.vod2.myqcloud.com/cceb63d0vodgzp1255680877/1eee082d4564972819039364800/2Xya3DCOAPcA.mp4',
         })
         .expect(200);
       assert.equal(resp.body.data.cover_id, initiater.values.file[0].id);

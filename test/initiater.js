@@ -254,11 +254,11 @@ module.exports = class Initiater {
     // inject file ...
       this.app.model.Banner.bulkCreate([{
         cover_id: this.values.file[0].id,
-        video_id: this.values.file[1].id,
+        video_url: 'http://1255680877.vod2.myqcloud.com/cceb63d0vodgzp1255680877/1eee082d4564972819039364800/2Xya3DCOAPcA.mp4',
       },
       {
         cover_id: this.values.file[0].id,
-        video_id: this.values.file[1].id,
+        video_url: 'http://1255680877.vod2.myqcloud.com/cceb63d0vodgzp1255680877/1eee082d4564972819039364800/2Xya3DCOAPcA.mp4',
       },
       ]));
   }

@@ -3,6 +3,7 @@ module.exports = (app) => {
     UUID,
     UUIDV1,
     ENUM,
+    STRING,
   } = app.Sequelize;
 
     /**
@@ -11,9 +12,9 @@ module.exports = (app) => {
      * @model Banner
      * @namespace Model
      * @property {uuid}   id
-     * @property {uuid}   cover_id - 视频封面图
-     * @property {uuid}   video_id - 视频内容
-     * @property {uuid}   status   - 商家状态['ON', 'OFF']，分别表示开启和关闭
+     * @property {uuid}   cover_id  - 视频封面图
+     * @property {uuid}   video_url - 视频内容
+     * @property {uuid}   status    - 商家状态['ON', 'OFF']，分别表示开启和关闭
      */
   const Banner = app.model.define('banner', {
     id: {
@@ -25,8 +26,8 @@ module.exports = (app) => {
       type: UUID,
       allowNull: false,
     },
-    video_id: {
-      type: UUID,
+    video_url: {
+      type: STRING(64),
       allowNull: false,
     },
     status: {

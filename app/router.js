@@ -83,6 +83,6 @@ module.exports = (app) => {
   app.post(`${prefix}/wechat_notify`, wechat(), 'trade.wechatNotify');
 
   // tencent
-  app.post(`${prefix}/tencent/validation`, 'tencent.validate');
+  // app.post(`${prefix}/tencent/validation`, 'tencent.skdUpload');
 };
 

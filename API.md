@@ -117,6 +117,7 @@ info:
     | 16001 | file error          | 文件类型错误                   |
     | 16002 | file error          | 文件大小超出限制               |
     | 16003 | file error          | 非图片类型文件，不存在缩略图    |
+    | 16004 | file error          | 视频上传失败                  |
     | 17001 | card error          | 贺卡不存在                    |
     | 17002 | card error          | 贺卡已经被编辑过，不能再次编辑   |
     | 17003 | card error          | 录音文件非音频类型              |
@@ -747,13 +748,13 @@ paths:
           schema:
             required:
               - cover_id
-              - video_id
+              - video_url
             properties:
               cover_id:
                 type: string
                 format: uuid
                 description: banner图id
-              video_id:
+              video_url:
                 type: string
                 format: uuid
                 description: banner video id
@@ -804,13 +805,13 @@ paths:
             type: object
             required:
               - cover_id
-              - video_id
+              - video_url
             properties:
               cover_id:
                 type: string
                 format: uuid
                 description: banner图id
-              video_id:
+              video_url:
                 type: string
                 format: uuid
                 description: banner video id
@@ -907,7 +908,7 @@ paths:
                 type: string
                 format: uuid
                 description: 录音文件id
-              video_id:
+              video_url:
                 type: string
                 format: uuid
                 description: 录像文件id
@@ -1237,7 +1238,7 @@ definitions:
       cover_id:
         type: string
         format: uuid
-      video_id:
+      video_url:
         type: string
         format: uuid
         
@@ -1284,7 +1285,7 @@ definitions:
         type: string
         format: uuid
         description: 录音文件id
-      video_id:
+      video_url:
         type: string
         format: uuid
         description: 录像文件id

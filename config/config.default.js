@@ -53,8 +53,10 @@ module.exports = () => {
   };
 
   exports.tencent = {
-    SecretId: 'AKIDADg3IJmcw4xc6LrEnBNL3VheLlzwv3C4',
-    SecretKey: 'jHadQxGKCwRjkV1LPEsKXVM1RcYJtHTQ'
+    secretId: 'AKIDADg3IJmcw4xc6LrEnBNL3VheLlzwv3C4',
+    secretKey: 'jHadQxGKCwRjkV1LPEsKXVM1RcYJtHTQ',
+    notifyUrl: 'www.fs.com',
+    fileType:  'mp4',
   }
 
   exports.redis = {

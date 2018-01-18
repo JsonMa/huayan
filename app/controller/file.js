@@ -1,5 +1,6 @@
 const fs = require('fs');
 const gm = require('gm');
+const path = require('path');
 
 module.exports = (app) => {
   /**
@@ -53,24 +54,56 @@ module.exports = (app) => {
      */
     async upload() {
       const { ctx, uploadRule } = this;
-      const { files } = ctx.request;
+      const [files] = ctx.request.files;
       ctx.authPermission();
       await ctx.validate(uploadRule);
 
-      const reqFiles = files.map(file => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        path: file.path,
-      }));
-      const createdFiles = await app.model.File.bulkCreate(reqFiles);
+      let cosResult = null;
+      if (~files.type.indexOf('mp4')) { // eslint-disable-line
+        const config = app.config.tencent;
+        const {
+          fileType,
+          notifyUrl,
+          secretId,
+          secretKey,
+        } = config;
+        const VodUploadApi = ctx.helper.vodUploadApi;
+        const filePath = path.join(`${app.baseDir}`, files.path);
+        const slicePage = 512 * 1024;
+        const api = new VodUploadApi(config);
 
-      ctx.jsonBody = createdFiles.map(file => ({
+        // 安全凭证
+        api.SetSecretId(secretId);
+        api.SetSecretKey(secretKey);
+        api.SetRegion('gz');
+        cosResult = await new Promise((resolve, reject) => {
+          api.UploadVideo(filePath, files.name, fileType, slicePage, notifyUrl, (err, data) => {
+            if (err) reject(err);
+            resolve(data);
+          });
+        });
+
+        ctx.error(cosResult.url, '视频上传失败', 16004);
+        ctx.jsonBody = {
+          url: cosResult.url,
+        };
+        return;
+      }
+
+      // 非视频文件
+      const file = await app.model.File.create({
+        name: files.name,
+        size: files.size,
+        type: files.type,
+        path: files.path,
+      });
+
+      ctx.jsonBody = {
         id: file.id,
         name: file.name,
         size: file.size,
         type: file.type,
-      }));
+      };
     }
 
     /**

@@ -134,7 +134,7 @@ const tables = {
       type: UUID,
       allowNull: false,
     },
-    video_id: {
+    video_url: {
       type: UUID,
       allowNull: false,
     },

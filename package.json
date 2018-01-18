@@ -31,6 +31,8 @@
     "raven": "^2.2.1",
     "sequelize": "4.22.5",
     "underscore": "^1.8.3",
+    "urlencode": "^1.1.0",
+    "util": "^0.10.3",
     "utility": "1.13.1",
     "uuid": "3.1.0",
     "validate-commit-msg": "2.14.0",
