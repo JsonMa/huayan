@@ -81,8 +81,5 @@ module.exports = (app) => {
   app.post(`${prefix}/trades`, 'trade.create');
   app.get(`${prefix}/trades/:id`, 'trade.fetch');
   app.post(`${prefix}/wechat_notify`, wechat(), 'trade.wechatNotify');
-
-  // tencent
-  // app.post(`${prefix}/tencent/validation`, 'tencent.skdUpload');
 };
 

@@ -12,9 +12,9 @@ module.exports = (app) => {
     /**
      * 完成交易
      *
-     * @param {uuid} tradeId 交易ID
+     * @param {string} tradeId 交易ID
      * @param {string} status 交易状态
-     * @returns {Trade} trade
+     * @returns {promise} trade
      * @memberof Trade
      */
     finishTrade(tradeId, status) {
@@ -30,7 +30,6 @@ module.exports = (app) => {
         const commodity = yield Commodity.findById(order.commodity_id); // 获取商品
         const user = yield User.findById(order.user_id); // 获取下单用户
 
-        
         ctx.assert(trade, '订单不存在', 25001);
 
         switch (status) {

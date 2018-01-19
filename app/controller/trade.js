@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 const SUCCESS = 'SUCCESS';
-const FAILURE = 'FAILURE';
+const FAILURE = 'FAIL';
 
 module.exports = (app) => {
   /**
@@ -115,25 +115,26 @@ module.exports = (app) => {
      * @memberof TradeController
      */
     async wechatNotify() {
+      const { ctx, service } = this;
       const { body } = this.ctx.request;
       const { Trade } = this.app.model;
 
       const {
         object2Xml, tn2uuid,
-      } = this.service.wechat;
+      } = service.wechat;
 
       /* istanbul ignore if */
       if (!this.service.wechat.verify(body)) {
-        this.ctx.body = object2Xml({ return_code: FAILURE });
+        ctx.body = object2Xml({ return_code: FAILURE });
+        return;
       }
 
       await this.service.trade.finishTrade(
-        'a889dc80-ec77-11e7-adbd-9ddef5e4147d',
         tn2uuid(body.out_trade_no),
         /* istanbul ignore next */
-        body.return_code.toUpperCase() === SUCCESS ? Trade.STATUS.SUCCESS : Trade.STATUS.CLOSED,
+        body.result_code.toUpperCase() === SUCCESS ? Trade.STATUS.SUCCESS : Trade.STATUS.CLOSED,
       );
-      this.ctx.body = object2Xml({ return_code: SUCCESS });
+      ctx.body = object2Xml({ return_code: SUCCESS });
     }
   }
   return TradeController;
