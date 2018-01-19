@@ -53,7 +53,10 @@ module.exports = (app) => {
               return trade.save({
                 transaction: t,
               }).then(() => {
-                if (commodity.quata) user.card_num += commodity.quata * order.count;
+                if (commodity.quata) {
+                  user.card_num += commodity.quata * order.count;
+                  user.card_total += commodity.quata * order.count;
+                }
                 return user.save({
                   transaction: t,
                 });
