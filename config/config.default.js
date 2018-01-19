@@ -41,17 +41,19 @@ module.exports = () => {
     },
   };
 
+  // 微信支付
   exports.wechat = {
-    appid: 'wx88168e0c2c6b3bf2',
-    mch_id: 10000100,
+    appid: 'wx557ba9a6f91397ec', // 小程序appid
+    mch_id: 1495285102, // 微信支付mchid
     trade_type: 'JSAPI',
-    key: '192006250b4c09247ec02edce69f6a2d', // 自定义key
-    secret: '84bb33970341d312339b040b89d49bd8', //小程序的 app secret
+    key: 'huayanxiaochengxu9090ERWEIMAHEKA', // 微信支付key
+    secret: '9805b899521e50f413bf66cdd0484133', //小程序的 app secret
     grant_type: 'authorization_code', // token换取openid所需的
     openid_url: 'https://api.weixin.qq.com/sns/jscode2session', // openid获取地址
     unifiedorder_url: 'https://api.mch.weixin.qq.com/pay/unifiedorder', // 统一下单接口地址
   };
 
+  // 腾讯云
   exports.tencent = {
     secretId: 'AKIDADg3IJmcw4xc6LrEnBNL3VheLlzwv3C4',
     secretKey: 'jHadQxGKCwRjkV1LPEsKXVM1RcYJtHTQ',
@@ -130,6 +132,8 @@ module.exports = () => {
     client_id: '1052527659', // 应用ID
     api_key: '288ffb0e77e30f6b17ea518f3ee4cea2', // 应用秘钥
   };
+
+  exports.host = 'https://buildupstep.cn';
 
   return exports;
 };

@@ -25,10 +25,10 @@ module.exports = (app) => {
       assert(config.appid, '[huayan] appid is required in config.wechat');
       assert(config.mch_id, '[huayan] mch_id is required in config.wechat');
       assert(config.trade_type, '[huayan] trade_type is required in config.wechat');
-      assert(config.key, '[huayan] key is required in config.wechat');
+      assert(config.secret, '[huayan] key is required in config.wechat');
 
       this.defaults = {
-        notify_url: host + ctx.helper.pathFor('wechat_notify'),
+        notify_url: `${host}/api/v1/wechat_notify`,
         appid: config.appid,
         mch_id: config.mch_id,
         trade_type: config.trade_type,
@@ -214,18 +214,17 @@ module.exports = (app) => {
           body: commodity.name,
           out_trade_no: uuid2tn(trade.id),
           total_fee: Math.floor(order.realPrice * 100),
-          spbill_create_ip: ctx.ip,
-          attach: '支付测试',
+          spbill_create_ip: ctx.ip === '::1' ? '111.231.76.244' : ctx.ip,
           openid: order.open_id,
         });
-        const resp = yield request(this.config.unifiedorder_url, data);
+        const resp = yield request(app.config.wechat.unifiedorder_url, data);
         ctx.error(resp.data.return_code === 'SUCCESS', resp.data.return_msg, 25003);
 
         const payload = {
           appId: resp.data.appid,
           package: `prepay_id=${resp.data.prepay_id}`,
           nonceStr: nonceStr(),
-          timeStamp: Date.now().toString().slice(0, 10),
+          timeStamp: parseInt(Date.now() / 1000, 10).toString(),
           signType: 'MD5',
         };
         payload.paySign = sign(payload); // 再次签名

@@ -45,6 +45,7 @@ module.exports = (app) => {
     async create() {
       const { ctx, service, createRule } = this;
       const { code, commodity_id: commodityId, count } = await ctx.validate(createRule);
+      ctx.authPermission();
 
       // 获取openid
       const resp = await service.wechat.openid(code);
@@ -122,13 +123,13 @@ module.exports = (app) => {
       } = this.service.wechat;
 
       /* istanbul ignore if */
-      // if (!this.service.wechat.verify(body)) {
-      //   this.ctx.body = object2Xml({ return_code: FAILURE });
-      // }
+      if (!this.service.wechat.verify(body)) {
+        this.ctx.body = object2Xml({ return_code: FAILURE });
+      }
 
       await this.service.trade.finishTrade(
         'a889dc80-ec77-11e7-adbd-9ddef5e4147d',
-        // tn2uuid(body.out_trade_no),
+        tn2uuid(body.out_trade_no),
         /* istanbul ignore next */
         body.return_code.toUpperCase() === SUCCESS ? Trade.STATUS.SUCCESS : Trade.STATUS.CLOSED,
       );
