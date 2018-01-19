@@ -1,3 +1,4 @@
+// @ts-nocheck
 const co = require('co');
 const assert = require('assert');
 
@@ -55,7 +56,7 @@ module.exports = (app) => {
                 if (commodity.quata) user.card_num += commodity.quata * order.count;
                 return user.save({
                   transaction: t,
-                }).then(() => t.commit()).catch(() => t.rollback());
+                });
               });
             }));
             break;
