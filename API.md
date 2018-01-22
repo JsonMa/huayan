@@ -84,6 +84,7 @@ info:
     - 20000 - 20999: Order 相关错误
     - 21000 - 21999: Trade 相关错误
     - 22000 - 22999: Tencent API 相关错误
+    - 23000 - 23999: miniProgram API 相关错误
 
 
     | 状态码  | 含义          | 说明             |
@@ -138,6 +139,7 @@ info:
     | 20001 | order error       | 订单不存在 |
     | 21001 | trade error       | openid获取失败 |
     | 22001 | tencent api error       | 腾讯API认证失败 |
+    | 23001 | miniProgram api error       | 小程序token获取失败 |
 
   title: "花言 API"
   termsOfService: "http://111.231.76.244:7001/"

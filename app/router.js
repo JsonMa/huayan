@@ -81,5 +81,8 @@ module.exports = (app) => {
   app.post(`${prefix}/trades`, 'trade.create');
   app.get(`${prefix}/trades/:id`, 'trade.fetch');
   app.post(`${prefix}/wechat_notify`, wechat(), 'trade.wechatNotify');
+
+  // 小程序接口
+  app.get(`${prefix}/mini_program/code`, 'miniProgram.code');
 };
 

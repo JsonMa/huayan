@@ -61,6 +61,13 @@ module.exports = () => {
     fileType:  'mp4',
   }
 
+  // 小程序api
+  exports.miniProgram = {
+    grantType: 'client_credential',
+    tokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
+    codeUrl: 'https://api.weixin.qq.com/wxa/getwxacodeunlimit',
+  }
+
   exports.redis = {
     client: {
       port: 6379,

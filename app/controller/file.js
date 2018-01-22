@@ -1,3 +1,4 @@
+// @ts-nocheck
 const fs = require('fs');
 const gm = require('gm');
 const path = require('path');
@@ -159,7 +160,7 @@ module.exports = (app) => {
 
       ctx.error(!!~file.type.indexOf('image'), '非图片类型文件，不存在缩略图', 16003); // eslint-disable-line
       gm(fs.createReadStream(file.path))
-        .resize(160, 60)
+        .thumbnail(160, 160)
         .stream((err, data) => {
           if (err) throw err;
           else {
