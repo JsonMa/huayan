@@ -15,7 +15,7 @@ var keepAliveAgent = new http.Agent({
 var VodUploadApi = function(config) {
     this.secretId = config.secretId;
     this.secretKey = config.secretKey;
-    this.defaultRegion = "gz";
+    this.defaultRegion = "cd";
     this.config = config;
     this.sig = new Sig();
 };

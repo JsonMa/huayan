@@ -76,19 +76,15 @@ module.exports = (app) => {
         // 安全凭证
         api.SetSecretId(secretId);
         api.SetSecretKey(secretKey);
-        api.SetRegion('gz');
+        api.SetRegion('cd');
         cosResult = await new Promise((resolve, reject) => {
           api.UploadVideo(filePath, files.name, fileType, slicePage, notifyUrl, (err, data) => {
             if (err) reject(err);
             resolve(data);
           });
         });
+        fs.unlinkSync(filePath);
         ctx.error(cosResult.url, '视频上传失败', 16004);
-
-        // 临时文件路径存入Redis
-        let tempVideo = await this.app.redis.get('tempVideo') || '';
-        tempVideo += `${files.path},`;
-        await this.app.redis.set('tempVideo', tempVideo);
 
         ctx.jsonBody = {
           url: cosResult.url,
