@@ -83,8 +83,13 @@ module.exports = (app) => {
             resolve(data);
           });
         });
-
         ctx.error(cosResult.url, '视频上传失败', 16004);
+
+        // 临时文件路径存入Redis
+        let tempVideo = await this.app.redis.get('tempVideo') || '';
+        tempVideo += `${files.path},`;
+        await this.app.redis.set('tempVideo', tempVideo);
+
         ctx.jsonBody = {
           url: cosResult.url,
         };
