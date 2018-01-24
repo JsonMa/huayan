@@ -61,7 +61,7 @@ module.exports = (app) => {
           method: 'POST',
           contentType: 'json',
           data: {
-            path: 'pages/cardbg/cardbg',
+            page: 'pages/greetingcard/greetingcard',
             scene: uuid2tn(id),
           },
         },
