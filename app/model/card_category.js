@@ -20,7 +20,7 @@ module.exports = (app) => {
      * @property {array}   music_ids        - 贺卡分类音乐
      * @property {array}   blessings        - 贺卡分类祝福语
      */
-  const CardCategory = app.model.define('blessing', {
+  const CardCategory = app.model.define('card_category', {
     id: {
       type: UUID,
       defaultValue: UUIDV1,
