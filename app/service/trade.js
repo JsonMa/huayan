@@ -59,6 +59,11 @@ module.exports = (app) => {
                 }
                 return user.save({
                   transaction: t,
+                }).then(() => {
+                  commodity.sales += 1;
+                  return commodity.save({
+                    transaction: t,
+                  });
                 });
               });
             }));
