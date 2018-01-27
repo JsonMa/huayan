@@ -60,7 +60,7 @@ module.exports = (app) => {
                 return user.save({
                   transaction: t,
                 }).then(() => {
-                  commodity.sales += 1;
+                  commodity.sales += order.count;
                   return commodity.save({
                     transaction: t,
                   });
