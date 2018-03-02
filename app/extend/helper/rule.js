@@ -24,7 +24,7 @@ module.exports = {
   },
   phone: {
     type: 'string',
-    pattern: '^1[0-9]{10}',
+    pattern: '^([1][0-9]{10})|(0[1-9]{2,3}-?[0-9]{7,8})$',
   },
   date: {
     type: 'string',
