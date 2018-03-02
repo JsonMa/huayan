@@ -3,6 +3,7 @@ module.exports = (app) => {
     UUID,
     UUIDV1,
     STRING,
+    BOOLEAN,
   } = app.Sequelize;
 
   /**
@@ -10,9 +11,10 @@ module.exports = (app) => {
    *
    * @model CommodityCategory
    * @namespace Model
-   * @property {uuid}   id
-   * @property {string} name    - 类型名
-   * @property {uuid}   cover   - 封面ID
+   * @property {uuid}    id
+   * @property {string}  name              - 类型名
+   * @property {uuid}    cover_id          - 封面ID
+   * @property {boolean} auto_charge       - 是否自动充值
    */
   const CommodityCategory = app.model.define('commodity_category', {
     id: {
@@ -27,6 +29,11 @@ module.exports = (app) => {
     cover_id: {
       type: UUID,
       allowNull: false,
+    },
+    auto_charge: {
+      type: BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   });
 

@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 module.exports = (app) => {
   /**
    * 贺卡相关路由
@@ -122,6 +120,22 @@ module.exports = (app) => {
         additionalProperties: false,
       };
     }
+    /**
+     * 参数规则-批量创建贺卡
+     *
+     * @readonly
+     * @memberof CardController
+     */
+    get batchCreateRule() {
+      return {
+        properties: {
+          order_id: this.ctx.helper.rule.uuid,
+        },
+        required: ['order_id'],
+        $async: true,
+        additionalProperties: false,
+      };
+    }
 
     /**
      * 获取贺卡列表
@@ -191,6 +205,39 @@ module.exports = (app) => {
       }
 
       ctx.jsonBody = card;
+    }
+
+    /**
+     * 批量增加贺卡
+     *
+     * @memberof CardController
+     * @returns {promise} 批量新建的贺卡
+     */
+    async batchCreate() {
+      const {
+        ctx, service, batchCreateRule,
+      } = this;
+      ctx.adminPermission();
+      const { order_id: orderId } = await ctx.validate(batchCreateRule);
+
+      // 批量创建贺卡
+      const order = await app.model.Trade.findById(orderId);
+      ctx.error(order, '订单不存在', 20001);
+      ctx.error(order.status === 'PAYED', '未完成支付，无法批量生成贺卡', 17013);
+
+      const { count, commodity_id: commodityId, user_id: userId } = order;
+      const commodity = await service.commodity.getByIdOrThrow(commodityId);
+      const { quata, category_id: categoryId } = commodity;
+      const commodityCategory = await service.commodityCategory.getByIdOrThrow(categoryId);  // eslint-disable-line
+      ctx.error(commodityCategory.auto_charge === false, '该商品类型无法批量生成贺卡', 17014);
+      ctx.error(quata, '该商品无二维码额度', 17015);
+
+      const cardsArray = [];
+      for (let i = 0; i < count * quata; i++) { // eslint-disable-line
+        cardsArray.push({ id: userId });
+      }
+      const cards = await app.model.Card.bulkCreate(cardsArray);
+      ctx.jsonBody = cards;
     }
 
     /**

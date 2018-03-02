@@ -131,6 +131,8 @@ info:
     | 17010 | card error          | 照片非图片类型文件              |
     | 17011 | card error          | 贺卡用户信息非JSON格式          |
     | 17012 | card error          | 贺卡用户信息不存在头像或昵称     |
+    | 17013 | card error          | 未完成支付，无法批量生成贺卡     |
+    | 17014 | card error          | 该商品类型无法批量生成贺卡       |
     | 18001 | printer error       | printer权限认证相关错误         |
     | 19001 | card category error       | 贺卡背景图片重复/丢失或包含非图片类型文件 |
     | 19002 | card category error       | 贺卡背景音乐重复/丢失或包含非音频类型文件 |
