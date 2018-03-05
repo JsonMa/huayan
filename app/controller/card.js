@@ -1,3 +1,7 @@
+const fs = require('fs');
+const QRCode = require('qr-image');
+const archiver = require('archiver');
+
 module.exports = (app) => {
   /**
    * 贺卡相关路由
@@ -126,12 +130,11 @@ module.exports = (app) => {
      * @readonly
      * @memberof CardController
      */
-    get batchCreateRule() {
+    get createRule() {
       return {
         properties: {
           order_id: this.ctx.helper.rule.uuid,
         },
-        required: ['order_id'],
         $async: true,
         additionalProperties: false,
       };
@@ -185,59 +188,82 @@ module.exports = (app) => {
     }
 
     /**
-     * 创建贺卡
-     *
-     * @memberof CardController
-     * @returns {promise} 新建的贺卡
-     */
-    async create() {
-      const { ctx, service } = this;
-      ctx.authPermission();
-      const { id } = ctx.state.auth.user;
-
-      // 创建贺卡
-      const user = await service.user.getByIdOrThrow(id);
-      ctx.error(user.card_num >= 1, '创建贺卡失败，剩余数量小于1', 17009);
-      const card = await service.card.create(id);
-      if (card) {
-        user.card_num -= 1;
-        await user.save();
-      }
-
-      ctx.jsonBody = card;
-    }
-
-    /**
-     * 批量增加贺卡
+     * 增加贺卡
      *
      * @memberof CardController
      * @returns {promise} 批量新建的贺卡
      */
-    async batchCreate() {
+    async create() {
       const {
-        ctx, service, batchCreateRule,
+        ctx, service, createRule,
       } = this;
-      ctx.adminPermission();
-      const { order_id: orderId } = await ctx.validate(batchCreateRule);
+      const { order_id: orderId } = await ctx.validate(createRule);
+      let card;
+      if (orderId) {
+        ctx.adminPermission();
 
-      // 批量创建贺卡
-      const order = await app.model.Trade.findById(orderId);
-      ctx.error(order, '订单不存在', 20001);
-      ctx.error(order.status === 'PAYED', '未完成支付，无法批量生成贺卡', 17013);
+        // 批量创建贺卡
+        const order = await app.model.Order.findById(orderId);
+        ctx.error(order, '订单不存在', 20001);
+        ctx.error(order.status === 'PAYED', '未完成支付，无法批量生成贺卡', 17013);
 
-      const { count, commodity_id: commodityId, user_id: userId } = order;
-      const commodity = await service.commodity.getByIdOrThrow(commodityId);
-      const { quata, category_id: categoryId } = commodity;
-      const commodityCategory = await service.commodityCategory.getByIdOrThrow(categoryId);  // eslint-disable-line
-      ctx.error(commodityCategory.auto_charge === false, '该商品类型无法批量生成贺卡', 17014);
-      ctx.error(quata, '该商品无二维码额度', 17015);
+        const { count, commodity_id: commodityId, user_id: userId } = order;
+        const commodity = await service.commodity.getByIdOrThrow(commodityId);
+        const { quata, category_id: categoryId } = commodity;
+        const commodityCategory = await service.commodityCategory.getByIdOrThrow(categoryId);  // eslint-disable-line
+        ctx.error(commodityCategory.auto_charge === false, '该商品类型无法批量生成贺卡', 17014);
+        ctx.error(quata, '该商品无二维码额度', 17015);
 
-      const cardsArray = [];
-      for (let i = 0; i < count * quata; i++) { // eslint-disable-line
-        cardsArray.push({ id: userId });
+        const cardsArray = [];
+        for (let i = 0; i < count * quata; i++) { // eslint-disable-line
+          cardsArray.push({ user_id: userId });
+        }
+        const cards = await app.model.Card.bulkCreate(cardsArray);
+        const filePath = `${app.baseDir}/files/${orderId}`;
+        const isExists = fs.existsSync(filePath);
+        if (!isExists) fs.mkdirSync(filePath);
+        cards.forEach((item) => {
+          if (item.id) {
+            const generateQR = QRCode.image(`https://buildupstep.cn/public/two_dimension_code?id=${item.id}`, { type: 'png' });
+            generateQR.pipe(fs.createWriteStream(`${filePath}/${item.id}.png`));
+          }
+        });
+
+        // 文件夹压缩
+        const gzipFilePath = `${app.baseDir}/files/${orderId}.gz`;
+        const out = fs.createWriteStream(gzipFilePath);
+        const archive = archiver('zip');
+        archive.directory(`${filePath}/`, false);
+        archive.pipe(out);
+        out.on('close', async () => {
+          const gzipFile = await app.model.File.create({
+            name: orderId,
+            size: archive.pointer(),
+            type: 'application/x-gzip',
+            path: gzipFilePath,
+          });
+        });
+        archive.finalize();
+
+        ctx.jsonBody = {
+          // gzip_id: gzipFile.id,
+          gzip_id: 121,
+          cards,
+        };
+      } else {
+        ctx.authPermission();
+        const { id } = ctx.state.auth.user;
+
+        // 创建贺卡
+        const user = await service.user.getByIdOrThrow(id);
+        ctx.error(user.card_num >= 1, '创建贺卡失败，剩余数量小于1', 17009);
+        card = await service.card.create(id);
+        if (card) {
+          user.card_num -= 1;
+          await user.save();
+        }
+        ctx.jsonBody = card;
       }
-      const cards = await app.model.Card.bulkCreate(cardsArray);
-      ctx.jsonBody = cards;
     }
 
     /**

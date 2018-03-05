@@ -38,6 +38,9 @@ module.exports = (app) => {
             minLength: 1,
           },
           cover_id: this.ctx.helper.rule.uuid,
+          auto_charge: {
+            type: 'boolean',
+          },
         },
         required: ['name', 'cover_id'],
         $async: true,
@@ -92,7 +95,7 @@ module.exports = (app) => {
      * 获取商品分类列表
      *
      * @memberof CommodityCategoryController
-     * @returns {array} 商品分类列表
+     * @returns {promise} 商品分类列表
      */
     async index() {
       const { ctx, service, indexRule } = this;
@@ -113,7 +116,7 @@ module.exports = (app) => {
      * 创建商品分类
      *
      * @memberof CommodityCategoryController
-     * @returns {object} 创建的商品分类
+     * @returns {promise} 创建的商品分类
      */
     async create() {
       const { ctx, service, createRule } = this;
@@ -134,7 +137,7 @@ module.exports = (app) => {
      * 修改商品分类
      *
      * @memberof CommodityCategoryController
-     * @returns {object} 修改的商品分类
+     * @returns {promise} 修改的商品分类
      */
     async update() {
       const { ctx, service, updateRule } = this;
@@ -159,7 +162,7 @@ module.exports = (app) => {
      * 批量删除商品分类
      *
      * @memberof CommodityCategoryController
-     * @returns {array} 删除的商品分类
+     * @returns {promise} 删除的商品分类
      */
     async batchDestroy() {
       const { ctx, service, batchDestroyRule } = this;
