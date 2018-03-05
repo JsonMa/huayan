@@ -1,6 +1,6 @@
 const fs = require('fs');
 const QRCode = require('qr-image');
-const archiver = require('archiver');
+const compressing = require('compressing');
 
 module.exports = (app) => {
   /**
@@ -221,7 +221,10 @@ module.exports = (app) => {
         const cards = await app.model.Card.bulkCreate(cardsArray);
         const filePath = `${app.baseDir}/files/${orderId}`;
         const isExists = fs.existsSync(filePath);
-        if (!isExists) fs.mkdirSync(filePath);
+        ctx.assert(!isExists, '该文件夹已存在', 24000);
+        fs.mkdirSync(filePath);
+
+        ctx.assert(!isExists, '文件夹已存在，服务多次生成', 24000);
         cards.forEach((item) => {
           if (item.id) {
             const generateQR = QRCode.image(`https://buildupstep.cn/public/two_dimension_code?id=${item.id}`, { type: 'png' });
@@ -231,25 +234,22 @@ module.exports = (app) => {
 
         // 文件夹压缩
         const gzipFilePath = `${app.baseDir}/files/${orderId}.gz`;
-        const out = fs.createWriteStream(gzipFilePath);
-        const archive = archiver('zip');
-        archive.directory(`${filePath}/`, false);
-        archive.pipe(out);
-        out.on('close', async () => {
+        await compressing.tar.compressDir(filePath, gzipFilePath).then(async () => {
+          const { size } = fs.statSync(gzipFilePath);
           const gzipFile = await app.model.File.create({
             name: orderId,
-            size: archive.pointer(),
+            size,
             type: 'application/x-gzip',
             path: gzipFilePath,
           });
-        });
-        archive.finalize();
 
-        ctx.jsonBody = {
-          // gzip_id: gzipFile.id,
-          gzip_id: 121,
-          cards,
-        };
+          ctx.jsonBody = {
+            gzip_id: gzipFile.id,
+            cards,
+          };
+        }).catch((err) => {
+          throw err;
+        });
       } else {
         ctx.authPermission();
         const { id } = ctx.state.auth.user;
