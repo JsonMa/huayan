@@ -42,16 +42,20 @@ module.exports = (app) => {
 
       const commodity = await this.app.model.Commodity.findById(params.commodity_id);
       this.ctx.error(commodity, '商品不存在', 18001);
-      this.ctx.error(commodity.status === this.app.model.Commodity.STATUS.ON, '商品已下架', 18006);
+      this.ctx.error(
+        commodity.status === this.app.model.Commodity.STATUS.ON,
+        '商品已下架',
+        18006,
+      );
 
       /* istanbul ignore next */
       const order = await this.app.model.Order.create(Object.assign(
-          {
-            user_id: ctx.state.auth.user.id,
-            commodity_price: commodity.realPrice,
-          },
-          params,
-        ),);
+        {
+          user_id: ctx.state.auth.user.id,
+          commodity_price: commodity.realPrice,
+        },
+        params,
+      ));
       this.ctx.jsonBody = order;
     }
 
@@ -87,10 +91,16 @@ module.exports = (app) => {
      */
     async list() {
       // this.ctx.adminPermission();
-      const query = await this.ctx.validate(this.listRule, this.ctx.helper.preprocessor.pagination);
+      const query = await this.ctx.validate(
+        this.listRule,
+        this.ctx.helper.preprocessor.pagination,
+      );
       const { count, start, sort } = query;
       /* istanbul ignore next */
-      const { count: total, rows: items } = await this.app.model.Order.findAndCount({
+      const {
+        count: total,
+        rows: items,
+      } = await this.app.model.Order.findAndCount({
         where: _.pickBy({
           status: query.status,
           no: parseInt(query.order_no, 10),
@@ -119,6 +129,7 @@ module.exports = (app) => {
           phone,
           address,
           quata: quata * item.count,
+          index: (count * start) + i + 1,
         });
         rows.push(item);
       }
@@ -206,14 +217,20 @@ module.exports = (app) => {
       /* istanbul ignore next */
       if (params.price) {
         ctx.adminPermission();
-        const trades = await app.model.Trade.count({ where: { order_id: params.id } });
+        const trades = await app.model.Trade.count({
+          where: { order_id: params.id },
+        });
         ctx.error(trades === 0, '当前订单已发起支付，无法修改价格', 18007);
       }
 
       /* istanbul ignore next */
       if (params.status) {
         ctx.checkPermission(order.user_id);
-        ctx.error(order.status === 'SHIPMENT', '订单当前状态不能修改为已完成', 18003);
+        ctx.error(
+          order.status === 'SHIPMENT',
+          '订单当前状态不能修改为已完成',
+          18003,
+        );
         params.status = params.status.toUpperCase();
       }
 

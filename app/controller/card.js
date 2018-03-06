@@ -212,8 +212,8 @@ module.exports = (app) => {
         ctx.error(quata, '该商品无二维码额度', 17015);
 
         const cardsArray = [];
+        // eslint-disable-next-line
         for (let i = 0; i < count * quata; i++) {
-          // eslint-disable-line
           cardsArray.push({ user_id: userId });
         }
         const cards = await app.model.Card.bulkCreate(cardsArray);
