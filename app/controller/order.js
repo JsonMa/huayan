@@ -45,10 +45,13 @@ module.exports = (app) => {
       this.ctx.error(commodity.status === this.app.model.Commodity.STATUS.ON, '商品已下架', 18006);
 
       /* istanbul ignore next */
-      const order = await this.app.model.Order.create(Object.assign({
-        user_id: ctx.state.auth.user.id,
-        commodity_price: commodity.realPrice,
-      }, params));
+      const order = await this.app.model.Order.create(Object.assign(
+          {
+            user_id: ctx.state.auth.user.id,
+            commodity_price: commodity.realPrice,
+          },
+          params,
+        ),);
       this.ctx.jsonBody = order;
     }
 
@@ -83,42 +86,58 @@ module.exports = (app) => {
      * @return {promise} Order List
      */
     async list() {
-      this.ctx.adminPermission();
-      const query = await this.ctx.validate(
-        this.listRule,
-        this.ctx.helper.preprocessor.pagination,
-      );
-
+      // this.ctx.adminPermission();
+      const query = await this.ctx.validate(this.listRule, this.ctx.helper.preprocessor.pagination);
       const { count, start, sort } = query;
-
       /* istanbul ignore next */
       const { count: total, rows: items } = await this.app.model.Order.findAndCount({
         where: _.pickBy({
           status: query.status,
           no: parseInt(query.order_no, 10),
-          created_at: (query.from || query.to) ? _.pickBy({
-            $gt: query.from ? new Date(query.from) : undefined,
-            $lt: query.to ? new Date(query.to) : undefined,
-          }) : null,
+          created_at:
+            query.from || query.to
+              ? _.pickBy({
+                $gt: query.from ? new Date(query.from) : undefined,
+                $lt: query.to ? new Date(query.to) : undefined,
+              })
+              : null,
         }),
         limit: count,
         offset: start,
         order: [['created_at', sort === 'false' ? 'DESC' : 'ASC']],
       });
 
-      this.ctx.jsonBody = _.pickBy({
-        count: total,
-        start,
-        items,
-      }, x => !_.isNil(x));
+      const rows = [];
+      // eslint-disable-next-line
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i].toJSON();
+        const { name, phone, address } = await this.service.user.getByIdOrThrow(item.user_id); // eslint-disable-line
+        const { quata } = await this.service.commodity.getByIdOrThrow(item.commodity_id); // eslint-disable-line
+
+        Object.assign(item, {
+          name,
+          phone,
+          address,
+          quata: quata * item.count,
+        });
+        rows.push(item);
+      }
+      this.ctx.jsonBody = _.pickBy(
+        {
+          count: total,
+          start,
+          rows,
+        },
+        x => !_.isNil(x),
+      );
     }
 
     /**
-   * 获取 order 的参数规则
-   *
-   * @readonly
-   * @memberof OrderController
-   */
+     * 获取 order 的参数规则
+     *
+     * @readonly
+     * @memberof OrderController
+     */
     get fetchRule() {
       return {
         properties: {
@@ -149,11 +168,11 @@ module.exports = (app) => {
     }
 
     /**
-   * 修改 order 的参数规则
-   *
-   * @readonly
-   * @memberof OrderController
-   */
+     * 修改 order 的参数规则
+     *
+     * @readonly
+     * @memberof OrderController
+     */
     get patchRule() {
       return {
         properties: {

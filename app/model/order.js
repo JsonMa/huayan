@@ -1,11 +1,6 @@
 module.exports = (app) => {
   const {
-    UUID,
-    UUIDV1,
-    ENUM,
-    INTEGER,
-    FLOAT,
-    STRING,
+    UUID, UUIDV1, ENUM, INTEGER, FLOAT, STRING,
   } = app.Sequelize;
 
   /**
@@ -22,58 +17,62 @@ module.exports = (app) => {
    * @property {int}    price                  - 实际支付价格
    * @property {int}    count                  - 商品数量
    * @property {uuid}   trade_id               - 交易id
+   * @property {uuid}   compressed_id          - 压缩包id（贺卡压缩包）
    *
    */
-  const Order = app.model.define('order', {
-    id: {
-      type: UUID,
-      defaultValue: UUIDV1,
-      primaryKey: true,
+  const Order = app.model.define(
+    'order',
+    {
+      id: {
+        type: UUID,
+        defaultValue: UUIDV1,
+        primaryKey: true,
+      },
+      no: {
+        type: INTEGER,
+        autoIncrement: true,
+      },
+      user_id: {
+        type: UUID,
+        allowNull: false,
+      },
+      open_id: {
+        type: STRING(64),
+        allowNull: false,
+      },
+      commodity_id: {
+        type: UUID,
+        allowNull: false,
+      },
+      compressed_id: {
+        type: UUID,
+        allowNull: true,
+      },
+      count: {
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+      },
+      status: {
+        type: ENUM,
+        values: ['CREATED', 'PAYED', 'SHIPMENT', 'FINISHED'],
+        defaultValue: 'CREATED',
+      },
+      commodity_price: {
+        type: FLOAT,
+        allowNull: false,
+      },
+      price: FLOAT,
+      trade_id: UUID,
     },
-    no: {
-      type: INTEGER,
-      autoIncrement: true,
-    },
-    user_id: {
-      type: UUID,
-      allowNull: false,
-    },
-    open_id: {
-      type: STRING(64),
-      allowNull: false,
-    },
-    commodity_id: {
-      type: UUID,
-      allowNull: false,
-    },
-    count: {
-      type: INTEGER,
-      allowNull: false,
-      defaultValue: 1,
-    },
-    status: {
-      type: ENUM,
-      values: [
-        'CREATED',
-        'PAYED',
-        'SHIPMENT',
-        'FINISHED',
-      ],
-      defaultValue: 'CREATED',
-    },
-    commodity_price: {
-      type: FLOAT,
-      allowNull: false,
-    },
-    price: FLOAT,
-    trade_id: UUID,
-  }, {
-    getterMethods: {
-      realPrice() {
-        return this.getDataValue('price') || this.getDataValue('commodity_price');
+    {
+      getterMethods: {
+        realPrice() {
+          return this.getDataValue('price') || this.getDataValue('commodity_price');
+        },
       },
     },
-  });
+  );
 
   Order.STATUS = {
     CREATED: 'CREATED',

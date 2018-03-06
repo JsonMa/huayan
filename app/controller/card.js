@@ -21,10 +21,7 @@ module.exports = (app) => {
         properties: {
           status: {
             type: 'string',
-            enum: [
-              'NONBLANK',
-              'BLANK',
-            ],
+            enum: ['NONBLANK', 'BLANK'],
           },
           category_id: this.ctx.helper.rule.uuid,
           user_id: this.ctx.helper.rule.uuid,
@@ -95,10 +92,7 @@ module.exports = (app) => {
           picture_id: this.ctx.helper.rule.uuid,
           status: {
             type: 'string',
-            enum: [
-              'NONBLANK',
-              'BLANK',
-            ],
+            enum: ['NONBLANK', 'BLANK'],
           },
           background_id: this.ctx.helper.rule.uuid,
         },
@@ -151,7 +145,12 @@ module.exports = (app) => {
       const { card } = ctx.service;
       ctx.authPermission();
       const {
-        user_id: userId, sort, start, count, status, category_id: categoryId,
+        user_id: userId,
+        sort,
+        start,
+        count,
+        status,
+        category_id: categoryId,
       } = await ctx.validate(indexRule, ctx.helper.preprocessor.pagination);
 
       // 获取贺卡列表
@@ -194,13 +193,11 @@ module.exports = (app) => {
      * @returns {promise} 批量新建的贺卡
      */
     async create() {
-      const {
-        ctx, service, createRule,
-      } = this;
+      const { ctx, service, createRule } = this;
       const { order_id: orderId } = await ctx.validate(createRule);
       let card;
       if (orderId) {
-        ctx.adminPermission();
+        // ctx.adminPermission();
 
         // 批量创建贺卡
         const order = await app.model.Order.findById(orderId);
@@ -210,48 +207,60 @@ module.exports = (app) => {
         const { count, commodity_id: commodityId, user_id: userId } = order;
         const commodity = await service.commodity.getByIdOrThrow(commodityId);
         const { quata, category_id: categoryId } = commodity;
-        const commodityCategory = await service.commodityCategory.getByIdOrThrow(categoryId);  // eslint-disable-line
+        const commodityCategory = await service.commodityCategory.getByIdOrThrow(categoryId); // eslint-disable-line
         ctx.error(commodityCategory.auto_charge === false, '该商品类型无法批量生成贺卡', 17014);
         ctx.error(quata, '该商品无二维码额度', 17015);
 
         const cardsArray = [];
-        for (let i = 0; i < count * quata; i++) { // eslint-disable-line
+        for (let i = 0; i < count * quata; i++) {
+          // eslint-disable-line
           cardsArray.push({ user_id: userId });
         }
         const cards = await app.model.Card.bulkCreate(cardsArray);
         const filePath = `${app.baseDir}/files/${orderId}`;
-        const isExists = fs.existsSync(filePath);
-        ctx.assert(!isExists, '该文件夹已存在', 24000);
+        const gzipFilePath = `${app.baseDir}/files/${orderId}.gz`;
+        const isExists = fs.existsSync(gzipFilePath);
+        ctx.assert(!isExists, '该压缩文件已存在', 24000);
         fs.mkdirSync(filePath);
 
-        ctx.assert(!isExists, '文件夹已存在，服务多次生成', 24000);
         cards.forEach((item) => {
           if (item.id) {
-            const generateQR = QRCode.image(`https://buildupstep.cn/public/two_dimension_code?id=${item.id}`, { type: 'png' });
+            const generateQR = QRCode.image(
+              `https://buildupstep.cn/public/two_dimension_code?id=${item.id}`,
+              { type: 'png' },
+            );
             generateQR.pipe(fs.createWriteStream(`${filePath}/${item.id}.png`));
           }
         });
 
         // 文件夹压缩
-        const gzipFilePath = `${app.baseDir}/files/${orderId}.gz`;
-        await compressing.tar.compressDir(filePath, gzipFilePath).then(async () => {
-          const { size } = fs.statSync(gzipFilePath);
-          const gzipFile = await app.model.File.create({
-            name: orderId,
-            size,
-            type: 'application/x-gzip',
-            path: gzipFilePath,
-          });
+        await compressing.tar
+          .compressDir(filePath, gzipFilePath)
+          .then(async () => {
+            const { size } = fs.statSync(gzipFilePath);
+            const gzipFile = await app.model.File.create({
+              name: orderId,
+              size,
+              type: 'application/x-gzip',
+              path: gzipFilePath,
+            });
 
-          ctx.jsonBody = {
-            gzip_id: gzipFile.id,
-            cards,
-          };
-        }).catch((err) => {
-          throw err;
-        });
+            // 更新order信息
+            order.compressed_id = gzipFile.id;
+            await order.save();
+            // 删除原有的文件夹
+            // fs.rmdirSync(filePath);
+
+            ctx.jsonBody = {
+              gzip_id: gzipFile.id,
+              cards,
+            };
+          })
+          .catch((err) => {
+            throw err;
+          });
       } else {
-        ctx.authPermission();
+        // ctx.authPermission();
         const { id } = ctx.state.auth.user;
 
         // 创建贺卡
@@ -289,7 +298,11 @@ module.exports = (app) => {
       const openidResult = await service.wechat.openid(code);
 
       ctx.error(openidResult.data.openid, 'openid获取失败', 21001);
-      ctx.error(card.status === 'BLANK' || openidResult.data.openid === card.union_id, '贺卡已经被编辑过，不能再次编辑', 17002);
+      ctx.error(
+        card.status === 'BLANK' || openidResult.data.openid === card.union_id,
+        '贺卡已经被编辑过，不能再次编辑',
+        17002,
+      );
 
       // 验证贺卡分类是否存在
       /* istanbul ignore else */
@@ -347,11 +360,7 @@ module.exports = (app) => {
       // 查询并删除指定的贺卡
       await service.card.getByIdOrThrow(id);
       const deletedCard = await service.card.delete(id);
-      const {
-        voice_id: voiceId,
-        cover_id: coverId,
-        picture_id: pictureId,
-      } = deletedCard;
+      const { voice_id: voiceId, cover_id: coverId, picture_id: pictureId } = deletedCard;
 
       /* istanbul ignore next */
       if (voiceId) await service.file.delete(voiceId);
@@ -366,4 +375,3 @@ module.exports = (app) => {
 
   return CardController;
 };
-
