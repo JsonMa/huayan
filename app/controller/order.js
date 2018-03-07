@@ -134,7 +134,7 @@ module.exports = (app) => {
         const item = items[i].toJSON();
         const { name, phone } = await this.service.user.getByIdOrThrow(item.user_id); // eslint-disable-line
         const { quata, name: commodity, category_id: categoryId } = await this.service.commodity.getByIdOrThrow(item.commodity_id); // eslint-disable-line
-        const { auto_charge: auto } = await this.service.commodity.getByIdOrThrow(categoryId); // eslint-disable-line
+        const { auto_charge: auto } = await this.service.commodityCategory.getByIdOrThrow(categoryId); // eslint-disable-line
 
         Object.assign(item, {
           name,
