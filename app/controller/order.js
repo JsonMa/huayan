@@ -132,15 +132,15 @@ module.exports = (app) => {
       // eslint-disable-next-line
       for (let i = 0; i < items.length; i++) {
         const item = items[i].toJSON();
-        const { name, phone, address } = await this.service.user.getByIdOrThrow(item.user_id); // eslint-disable-line
-        const { quata } = await this.service.commodity.getByIdOrThrow(item.commodity_id); // eslint-disable-line
+        const { name, phone } = await this.service.user.getByIdOrThrow(item.user_id); // eslint-disable-line
+        const { quata, name: commodity } = await this.service.commodity.getByIdOrThrow(item.commodity_id); // eslint-disable-line
 
         Object.assign(item, {
           name,
           phone,
-          address,
+          commodity,
           quata: quata * item.count,
-          index: (count * start) + i + 1,
+          index: start + i + 1,
         });
         rows.push(item);
       }
