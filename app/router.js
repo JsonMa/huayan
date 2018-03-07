@@ -75,7 +75,7 @@ module.exports = (app) => {
   // order 订单
   app.get(`${prefix}/orders`, 'order.list');
   app.get(`${prefix}/orders/:id`, 'order.fetch');
-  app.get('page/orders', 'order.render');
+  app.get('/page/orders', 'order.render');
   app.put(`${prefix}/orders/:id`, 'order.patch');
 
   // trade 交易
