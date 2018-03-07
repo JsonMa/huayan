@@ -75,6 +75,8 @@ module.exports = (app) => {
             enum: ['CREATED', 'PAYED', 'SHIPMENT', 'FINISHED'],
           },
           order_no: { type: 'string' },
+          phone: this.ctx.helper.rule.phone,
+          id: this.ctx.helper.rule.uuid,
           ...this.ctx.helper.rule.pagination,
         },
         required: ['start', 'count', 'sort'],
@@ -95,15 +97,24 @@ module.exports = (app) => {
         this.listRule,
         this.ctx.helper.preprocessor.pagination,
       );
-      const { count, start, sort } = query;
+      const {
+        count, start, sort, phone, id,
+      } = query;
+      let userId = '';
+      if (phone) {
+        const user = await this.app.model.User.find({ where: { phone } });
+        userId = user.id;
+      }
       /* istanbul ignore next */
       const {
         count: total,
         rows: items,
       } = await this.app.model.Order.findAndCount({
         where: _.pickBy({
+          id,
           status: query.status,
           no: parseInt(query.order_no, 10),
+          user_id: userId || null,
           created_at:
             query.from || query.to
               ? _.pickBy({
