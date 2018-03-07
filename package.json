@@ -14,6 +14,7 @@
     "egg-redis": "1.0.2",
     "egg-scripts": "^1.2.0",
     "egg-sequelize": "3.1.0",
+    "egg-view-nunjucks": "^2.1.6",
     "formidable": "^1.1.1",
     "gm": "^1.23.1",
     "iconv-lite": "^0.4.19",
@@ -69,8 +70,7 @@
     "debug": "egg-bin debug",
     "report": "egg-bin cov",
     "test": "egg-bin test",
-    "cov":
-      "nyc npm test && nyc check-coverage --lines 95 --functions 95 --branches 95 egg-bin test",
+    "cov": "nyc npm test && nyc check-coverage --lines 95 --functions 95 --branches 95 egg-bin test",
     "lint": "eslint .",
     "ci": "npm run lint && npm run cov",
     "autod": "autod",

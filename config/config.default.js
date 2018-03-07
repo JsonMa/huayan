@@ -139,6 +139,14 @@ module.exports = () => {
     client_id: '1052527659', // 应用ID
     api_key: '288ffb0e77e30f6b17ea518f3ee4cea2', // 应用秘钥
   };
+  
+  exports.view = {
+    mapping: {
+      '.html': 'nunjucks',
+    },
+    defaultExtension: '.nj',
+    defaultViewEngine: 'nunjucks',
+  },
 
   exports.host = 'https://buildupstep.cn';
 

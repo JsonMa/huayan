@@ -250,6 +250,15 @@ module.exports = (app) => {
 
       ctx.jsonBody = order;
     }
+    /**
+     * 页面渲染
+     *
+     * @memberof OrderController
+     * @returns { promise } 无返回
+     */
+    async render() {
+      await this.ctx.render('index.html');
+    }
   }
   return OrderController;
 };

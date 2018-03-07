@@ -1,15 +1,9 @@
 // @ts-nocheck
-const {
-  VError,
-} = require('verror');
+const { VError } = require('verror');
 const assert = require('assert');
 const _ = require('underscore');
-const fs = require('fs');
-const path = require('path');
 
 module.exports = {
-
-
   /**
    * 设置通用返回格式的body
    *
@@ -46,13 +40,19 @@ module.exports = {
     this.assert(code && typeof code === 'number');
 
     this.type = 'json';
-    const err = Object.assign(new VError({
-      name: 'HUAYAN_ERROR',
-      cause: originalError,
-    }, message), {
-      code,
-      status,
-    });
+    const err = Object.assign(
+      new VError(
+        {
+          name: 'HUAYAN_ERROR',
+          cause: originalError,
+        },
+        message,
+      ),
+      {
+        code,
+        status,
+      },
+    );
 
     this.throw(err);
   },
@@ -145,17 +145,17 @@ module.exports = {
     this.assert(user, 403);
   },
 
-  /**
-   * 渲染文件
-   *
-   * @param {string} file 文件路径
-   * @returns {steam} 文件流
-   */
-  render(file) {
-    /* istanbul ignore next */
-    this.type = 'html';
-    return fs.createReadStream(path.join(this.app.baseDir, 'app/public', file));
-  },
+  // /**
+  //  * 自定义渲染文件
+  //  *
+  //  * @param {string} file 文件路径
+  //  * @returns {steam} 文件流
+  //  */
+  // render(file) {
+  //   /* istanbul ignore next */
+  //   this.type = 'html';
+  //   return fs.createReadStream(path.join(this.app.baseDir, 'app/view', file));
+  // },
 
   /**
    * 渲染error
@@ -165,7 +165,9 @@ module.exports = {
    */
   renderError(err) {
     const { message = '服务器内部错误', status = 500 } = err;
-    const errorView = this.app.errorTemplate.replace(/{{ error_status }}/gi, status).replace(/{{ error_message }}/gi, message);
+    const errorView = this.app.errorTemplate
+      .replace(/{{ error_status }}/gi, status)
+      .replace(/{{ error_message }}/gi, message);
     return Buffer.from(errorView);
   },
 
