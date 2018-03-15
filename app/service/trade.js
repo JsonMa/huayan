@@ -24,15 +24,15 @@ module.exports = (app) => {
       /* istanbul ignore next */
       return co.wrap(function* () {
         const {
-          Trade, Order, Commodity, User,
+          Trade, Order, Commodity, User, commodityCategory,
         } = app.model;
         const trade = yield Trade.findById(tradeId); // 获取支付订单
         const order = yield Order.findById(trade.order_id); // 获取商品订单
         const commodity = yield Commodity.findById(order.commodity_id); // 获取商品
         const user = yield User.findById(order.user_id); // 获取下单用户
+        const category = yield commodityCategory.findById(commodity.category_id); // 获取商品分类
 
         ctx.assert(trade, '订单不存在', 25001);
-
         switch (status) {
           case Trade.STATUS.CLOSED:
           case Trade.STATUS.FINISHED:
@@ -53,7 +53,7 @@ module.exports = (app) => {
               return trade.save({
                 transaction: t,
               }).then(() => {
-                if (commodity.quata) {
+                if (commodity.quata && category.auto_charge) {
                   user.card_num += commodity.quata * order.count;
                   user.card_total += commodity.quata * order.count;
                 }

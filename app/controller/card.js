@@ -207,8 +207,8 @@ module.exports = (app) => {
         const { count, commodity_id: commodityId, user_id: userId } = order;
         const commodity = await service.commodity.getByIdOrThrow(commodityId);
         const { quata, category_id: categoryId } = commodity;
-        const commodityCategory = await service.commodityCategory.getByIdOrThrow(categoryId); // eslint-disable-line
-        ctx.error(commodityCategory.auto_charge === false, '该商品类型无法批量生成贺卡', 17014);
+        const category = await service.commodityCategory.getByIdOrThrow(categoryId); // eslint-disable-line
+        ctx.error(category.auto_charge === false, '该商品类型无法批量生成贺卡', 17014);
         ctx.error(quata, '该商品无二维码额度', 17015);
 
         const cardsArray = [];

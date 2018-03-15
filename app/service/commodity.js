@@ -10,7 +10,7 @@ module.exports = (app) => {
      * 获取商品列表
      *
      * @param {string}  pdName        -商品名称
-     * @param {uuid}    categoryId    -商品分类ID
+     * @param {string}  categoryId    -商品分类ID
      * @param {string}  pdStatus      -商品状态
      * @param {string}  pdRecommended -商品推荐
      * @param {string}  pgStart       -从第几条数据开始
@@ -177,7 +177,7 @@ module.exports = (app) => {
       const { assert, uuidValidate } = this.ctx.helper;
       assert(uuidValidate(id), 'id需为uuid格式');
 
-      return this.app.model.Commodity.findById(id).then((commodity) => {
+      return this.app.model.Commodity.findById(id, { paranoid: false }).then((commodity) => {
         this.ctx.error(commodity, '商品不存在', 15000);
         return commodity;
       });
