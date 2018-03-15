@@ -1,6 +1,4 @@
-# shubang
-
-
+# huayan server
 
 ## QuickStart
 
@@ -33,7 +31,8 @@ $ npm stop
 ### Debug
 
 vscode launch.json 配置
-```
+
+```json
 {
   "version": "0.2.0",
   "configurations": [
@@ -73,6 +72,5 @@ vscode launch.json 配置
   ]
 }
 ```
-
 
 [egg]: https://eggjs.org
