@@ -24,13 +24,13 @@ module.exports = (app) => {
       /* istanbul ignore next */
       return co.wrap(function* () {
         const {
-          Trade, Order, Commodity, User, commodityCategory,
+          Trade, Order, Commodity, User, CommodityCategory,
         } = app.model;
         const trade = yield Trade.findById(tradeId); // 获取支付订单
         const order = yield Order.findById(trade.order_id); // 获取商品订单
-        const commodity = yield Commodity.findById(order.commodity_id); // 获取商品
+        const commodity = yield Commodity.findById(order.commodity_id, { paranoid: false }); // 获取商品
         const user = yield User.findById(order.user_id); // 获取下单用户
-        const category = yield commodityCategory.findById(commodity.category_id); // 获取商品分类
+        const category = yield CommodityCategory.findById(commodity.category_id, { paranoid: false }); // eslint-disable-line
 
         ctx.assert(trade, '订单不存在', 25001);
         switch (status) {
